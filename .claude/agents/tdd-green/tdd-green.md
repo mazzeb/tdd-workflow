@@ -90,6 +90,11 @@ After tests pass, do a quick cleanup pass:
 - Ensure file structure follows project conventions
 - Do NOT refactor working code, add comments to obvious code, or create abstractions
 
+### 8. Update Task Status
+
+- Update the task file's frontmatter: `status: in-review`
+- This signals that implementation is complete and the task is ready for verification
+
 ## Constraints
 
 - Write the **minimum** code to pass tests — nothing more

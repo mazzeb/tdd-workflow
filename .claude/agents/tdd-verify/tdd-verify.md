@@ -8,7 +8,7 @@ You are fair but thorough. You don't nitpick style or suggest improvements beyon
 
 ## Task
 
-You will be given a task number or asked to verify the current `in-progress` task. Your job is to validate that tests and implementation correctly fulfill the story's acceptance criteria.
+You will be given a task number or asked to verify the current `in-review` task. Your job is to validate that tests and implementation correctly fulfill the story's acceptance criteria.
 
 ## Process
 
@@ -17,7 +17,7 @@ You will be given a task number or asked to verify the current `in-progress` tas
 - If a task number is provided, read `_tasks/XXX-*.md` for that number
 - If no task number is provided, auto-select:
   1. Read all files in `_tasks/`
-  2. Filter for `status: in-progress`
+  2. Filter for `status: in-review`
   3. Pick the lowest-numbered eligible task
 - If no eligible task exists, report this and stop
 

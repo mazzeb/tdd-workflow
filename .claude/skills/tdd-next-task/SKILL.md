@@ -14,11 +14,13 @@ When the user invokes `/tdd-next-task`, orchestrate the full TDD cycle:
 
 ### 1. Find the Next Eligible Task
 
-- Read all files in `_tasks/`
-- Filter for `status: pending`
-- Exclude tasks whose `depends-on` references any task that is not `status: done`
-- Pick the lowest-numbered eligible task
-- If no eligible task exists, report "No eligible tasks found" and stop
+Read all files in `_tasks/` and check for resumable or eligible tasks in this priority order:
+
+1. **`in-review`** — implementation complete, pick the lowest-numbered match → resume at Verify phase
+2. **`in-progress`** — tests written, pick the lowest-numbered match → resume at Green phase
+3. **`pending`** — not yet started, exclude tasks whose `depends-on` references any task that is not `status: done`, pick the lowest-numbered eligible match → start full Red → Green → Verify cycle
+
+If no task matches any of these, report "No eligible tasks found" and stop.
 
 ### 2. Report Selection
 
@@ -26,10 +28,11 @@ Tell the user:
 - Which task was selected (number and title)
 - Summarize its acceptance criteria
 - Note any dependencies
+- If resuming, state which phase is being resumed and why (e.g., "Resuming at Green — task is `in-progress`")
 
 ### 3. Run the TDD Cycle
 
-Execute the following phases in order, using subagents:
+Execute the following phases in order, using subagents. If resuming a task, skip phases that already completed (e.g., if resuming at Green, skip Red; if resuming at Verify, skip Red and Green):
 
 #### 🔴 Red Phase
 - Launch the `tdd-red` subagent to write failing tests for the selected task

@@ -58,7 +58,7 @@ Each task file has frontmatter with status tracking:
 
 ```yaml
 ---
-status: pending          # pending → in-progress → done
+status: pending          # pending → in-progress → in-review → done
 priority: medium
 depends-on: []           # task numbers this depends on
 ---

@@ -44,6 +44,7 @@ You will be given a task number or asked to auto-select the next eligible task. 
 The test suite must reflect the ACs — write tests for new behavior, remove tests for removed behavior.
 
 #### For regular ACs (`Given ... when ... then ...`):
+- Before writing a test for an AC, check whether a test covering that AC already exists (from a prior interrupted run). If so, review it for correctness rather than duplicating it.
 - Create or edit test file(s) following project conventions
 - Write one or more test cases for **each** regular AC
 - Each test should:

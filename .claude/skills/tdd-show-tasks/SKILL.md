@@ -22,7 +22,7 @@ When the user invokes `/tdd-show-tasks`, follow this process:
 For each task file, extract:
 - **Number** and **slug** from the filename (e.g., `003-auth-login.md` → `003`, `auth-login`)
 - **Title** from the first `# ` heading
-- **Status** from frontmatter (`pending`, `in-progress`, or `done`)
+- **Status** from frontmatter (`pending`, `in-progress`, `in-review`, or `done`)
 - **Priority** from frontmatter
 - **Dependencies** from frontmatter `depends-on` list
 ### 3. Display Summary Table
@@ -40,6 +40,7 @@ Present the tasks as a markdown table sorted by task number:
 Use these status indicators:
 - `pending` — waiting to be started
 - `in-progress` — tests written, implementation underway
+- `in-review` — implementation complete, verification pending
 - `done` — verified and complete
 
 ### 4. Show Summary Counts
@@ -47,7 +48,7 @@ Use these status indicators:
 Below the table, show:
 - Total tasks
 - Count per status (e.g., "2 pending, 1 in-progress, 3 done")
-- Next eligible task (lowest-numbered `pending` task whose dependencies are all `done`), or "All tasks complete!" if none remain
+- Next eligible task: first check for `in-review` (resumable at Verify), then `in-progress` (resumable at Green), then lowest-numbered `pending` task whose dependencies are all `done`. Show "All tasks complete!" if none remain
 
 ## Constraints
 

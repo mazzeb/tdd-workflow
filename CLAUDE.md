@@ -27,13 +27,13 @@ install.sh                          # Copies skills/agents into target project
 
 ### Task Files (_tasks/)
 - Naming: `NNN-slug-description.md` (three-digit zero-padded)
-- Frontmatter: `status` (pending/in-progress/done), `priority`, `depends-on`
+- Frontmatter: `status` (pending/in-progress/in-review/done), `priority`, `depends-on`
 - AC formats: `Given/when/then` for behavior, `[REMOVE]` prefix for removal — both with checkboxes
 - Feedback section: added on Verify rejection, cleared on done
 
 ### Status Flow
-- `pending` → `in-progress` (Red writes/removes tests) → `done` (Verify approves)
-- Verify rejection can revert to `pending` (Red issues) or stay `in-progress` (Green issues)
+- `pending` → `in-progress` (Red writes/removes tests) → `in-review` (Green completes implementation) → `done` (Verify approves)
+- Verify rejection can revert to `pending` (Red issues) or `in-progress` (Green issues)
 
 ## Development Rules
 

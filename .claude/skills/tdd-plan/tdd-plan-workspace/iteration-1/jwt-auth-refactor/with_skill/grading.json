@@ -1,0 +1,74 @@
+{
+  "expectations": [
+    {
+      "text": "Task files follow NNN-slug.md naming pattern",
+      "passed": true,
+      "evidence": "All 4 files match NNN-slug.md pattern"
+    },
+    {
+      "text": "Each task file has YAML frontmatter with status: pending",
+      "passed": true,
+      "evidence": "All 4 files have status: pending"
+    },
+    {
+      "text": "Each task file has priority field in frontmatter",
+      "passed": true,
+      "evidence": "All 4 files have priority field"
+    },
+    {
+      "text": "Each task file has depends-on field in frontmatter",
+      "passed": true,
+      "evidence": "All 4 files have depends-on field"
+    },
+    {
+      "text": "ACs use checkbox format",
+      "passed": true,
+      "evidence": "All 4 files have checkbox-format ACs"
+    },
+    {
+      "text": "ACs use Given/When/Then structure",
+      "passed": true,
+      "evidence": "Found 22 Given/When/Then ACs across all files"
+    },
+    {
+      "text": "Technical Notes reference actual project file paths",
+      "passed": true,
+      "evidence": "Found 12 file path references: ['001-jwt-token-verification-in-auth-middleware.md: src/', '001-jwt-token-verification-in-auth-middleware.md: tests/', '001-jwt-token-verification-in-auth-middleware.md: middleware/', '002-user-login-endpoint.md: src/', '002-user-login-endpoint.md: config/']"
+    },
+    {
+      "text": "Stories appear vertically sliced",
+      "passed": true,
+      "evidence": "No layer-only story titles detected across 4 files"
+    },
+    {
+      "text": "Contains [REMOVE] ACs for base64 auth removal",
+      "passed": true,
+      "evidence": "Found 2 [REMOVE] ACs"
+    },
+    {
+      "text": "References src/middleware/auth.js",
+      "passed": true,
+      "evidence": "Found auth middleware reference in 001-jwt-token-verification-in-auth-middleware.md"
+    },
+    {
+      "text": "Has both [REMOVE] and Given/When/Then AC formats",
+      "passed": true,
+      "evidence": "Both [REMOVE] and Given/When/Then ACs present"
+    }
+  ],
+  "summary": {
+    "passed": 11,
+    "failed": 0,
+    "total": 11,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "total_tokens": 30538,
+    "duration_ms": 159161,
+    "total_duration_seconds": 159.2
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": ""
+  }
+}

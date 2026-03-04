@@ -6,9 +6,31 @@ This repo contains reusable TDD skills and subagents for Claude Code. It is **no
 
 ```
 install.sh                          # Copies skills/agents into target project
-.claude/skills/tdd-*/SKILL.md       # Slash-command definitions
-.claude/skills/tdd-plan/template.md # Task file template
-.claude/agents/tdd-*/tdd-*.md       # Subagent personas
+README.md                           # User-facing documentation
+.claude/
+  skills/
+    tdd-plan/SKILL.md               # /tdd-plan — self-contained (has own persona)
+    tdd-plan/template.md            # Task file frontmatter + section template
+    tdd-red/SKILL.md                # /tdd-red — delegator → tdd-red agent
+    tdd-green/SKILL.md              # /tdd-green — delegator → tdd-green agent
+    tdd-verify/SKILL.md             # /tdd-verify — delegator → tdd-verify agent
+    tdd-next-task/SKILL.md          # /tdd-next-task — orchestrator (Red→Green→Verify loop)
+    tdd-show-tasks/SKILL.md         # /tdd-show-tasks — read-only dashboard
+    tdd-all-tasks/SKILL.md          # /tdd-all-tasks — runs all remaining tasks
+  agents/
+    tdd-red/tdd-red.md              # Strict QA Engineer persona
+    tdd-green/tdd-green.md          # Pragmatic Developer persona
+    tdd-verify/tdd-verify.md        # Senior Code Reviewer persona
+```
+
+## Commands
+
+```bash
+# Install into a target project
+./install.sh /path/to/target
+
+# Test install against a scratch directory
+mkdir /tmp/tdd-test && ./install.sh /tmp/tdd-test && ls -R /tmp/tdd-test/.claude
 ```
 
 ## Conventions
@@ -18,6 +40,10 @@ install.sh                          # Copies skills/agents into target project
 - Sections: Persona (if self-contained), Usage, Instructions, Subagent (if delegating), Constraints, Tools Available, Error Handling
 - Delegator skills launch agents with prompts separated by `---`
 - All commands use `/tdd-` prefix, lowercase hyphenated
+- Three skill types:
+  - **Self-contained** (`tdd-plan`, `tdd-show-tasks`) — has own Persona, runs directly
+  - **Delegator** (`tdd-red`, `tdd-green`, `tdd-verify`) — launches a subagent, prompt above `---` is for the skill, below `---` is the agent prompt
+  - **Orchestrator** (`tdd-next-task`, `tdd-all-tasks`) — coordinates multiple skill/agent invocations in sequence
 
 ### Agents (tdd-*.md)
 - Title: `# TDD Phase Agent — Persona Name`
@@ -32,7 +58,7 @@ install.sh                          # Copies skills/agents into target project
 - Feedback section: added on Verify rejection, cleared on done
 
 ### Status Flow
-- `pending` → `in-progress` (Red writes/removes tests) → `in-review` (Green completes implementation) → `done` (Verify approves)
+- `pending` → Red writes tests → `in-progress` → Green implements → `in-review` → Verify reviews → `done`
 - Verify rejection can revert to `pending` (Red issues) or `in-progress` (Green issues)
 
 ## Development Rules

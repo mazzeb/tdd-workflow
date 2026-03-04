@@ -1,0 +1,69 @@
+{
+  "expectations": [
+    {
+      "text": "Task files follow NNN-slug.md naming pattern",
+      "passed": true,
+      "evidence": "All 3 files match NNN-slug.md pattern"
+    },
+    {
+      "text": "Each task file has YAML frontmatter with status: pending",
+      "passed": true,
+      "evidence": "All 3 files have status: pending"
+    },
+    {
+      "text": "Each task file has priority field in frontmatter",
+      "passed": true,
+      "evidence": "All 3 files have priority field"
+    },
+    {
+      "text": "Each task file has depends-on field in frontmatter",
+      "passed": true,
+      "evidence": "All 3 files have depends-on field"
+    },
+    {
+      "text": "ACs use checkbox format",
+      "passed": true,
+      "evidence": "All 3 files have checkbox-format ACs"
+    },
+    {
+      "text": "ACs use Given/When/Then structure",
+      "passed": true,
+      "evidence": "Found 20 Given/When/Then ACs across all files"
+    },
+    {
+      "text": "Technical Notes reference actual project file paths",
+      "passed": true,
+      "evidence": "Found 10 file path references: ['001-tag-bookmarks.md: src/', '001-tag-bookmarks.md: config/', '001-tag-bookmarks.md: tests/', '001-tag-bookmarks.md: models/', '001-tag-bookmarks.md: routes/']"
+    },
+    {
+      "text": "Stories appear vertically sliced",
+      "passed": true,
+      "evidence": "No layer-only story titles detected across 3 files"
+    },
+    {
+      "text": "Technical notes mention search approach (FTS/LIKE)",
+      "passed": true,
+      "evidence": "Found 'full-text' reference in 001-tag-bookmarks.md"
+    },
+    {
+      "text": "Pagination ACs include concrete query parameters",
+      "passed": true,
+      "evidence": "Found pagination parameters: ['limit', 'offset', 'pageSize', 'page']"
+    }
+  ],
+  "summary": {
+    "passed": 10,
+    "failed": 0,
+    "total": 10,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "total_tokens": 34747,
+    "duration_ms": 160338,
+    "total_duration_seconds": 160.3
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": ""
+  }
+}

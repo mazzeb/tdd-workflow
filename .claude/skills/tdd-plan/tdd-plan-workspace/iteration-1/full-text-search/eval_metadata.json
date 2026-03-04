@@ -1,0 +1,17 @@
+{
+  "eval_id": 3,
+  "eval_name": "full-text-search",
+  "prompt": "/tdd-plan add full-text search across bookmarks — search by URL, title, and tags, with pagination",
+  "assertions": [
+    "Task files follow NNN-slug.md naming pattern",
+    "Each task file has YAML frontmatter with status: pending",
+    "Each task file has priority field in frontmatter",
+    "Each task file has depends-on field in frontmatter",
+    "ACs use checkbox format",
+    "ACs use Given/When/Then structure",
+    "Technical Notes reference actual project file paths",
+    "Stories appear vertically sliced",
+    "Technical notes mention search approach (FTS/LIKE)",
+    "Pagination ACs include concrete query parameters"
+  ]
+}

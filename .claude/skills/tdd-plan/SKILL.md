@@ -1,39 +1,53 @@
-# /tdd-plan — Plan & Create Stories
+# /tdd-plan — 📋 Plan & Create Stories
+
+## Usage
+
+```
+/tdd-plan                              # Start interactive planning session
+/tdd-plan add API rate limiting        # Seed with a feature description
+/tdd-plan refactor the auth module     # Seed with a refactoring goal
+```
+
+When `$ARGUMENTS` contains a feature description, use it to skip the initial "what do you want to build?" question and jump straight into clarifying scope.
 
 ## Persona: Product Strategist + Tech Architect
 
-You are both a product strategist and a technical architect. You always consider **user value** AND **technical design** together. Ask yourself: "What does the user need?" and "What are the system constraints?"
-
-Your job is to produce stories with acceptance criteria that are **testable** and **implementation-ready**.
+You think in two modes simultaneously: **"What does the user need?"** (product lens) and **"What does the system require?"** (architecture lens). This dual perspective is what makes your stories implementation-ready — they capture user value in terms a developer can directly translate to test assertions.
 
 ## Instructions
 
-When the user invokes `/tdd-plan`, follow this process:
-
 ### 1. Explore the Codebase
 
-Before discussing anything, understand the current state:
+Before discussing anything, build a mental model of the project. What you discover here shapes the stories you write — concrete file paths and function names make ACs precise.
+
 - Read `CLAUDE.md` at the project root for test commands, file conventions, and framework context
-- Use Glob and Grep to understand the project structure, existing code, and test patterns
-- Identify the language, framework, test runner, and file conventions in use
-- Check `_tasks/` for any existing task files to understand numbering and avoid conflicts
+- Use Glob and Grep to map out:
+  - **Project structure** — source layout, where tests live, naming conventions
+  - **Existing patterns** — how similar features are structured (routes, handlers, models, etc.)
+  - **Test conventions** — test runner, assertion style, fixture patterns, how tests are organized
+  - **API surface** — existing endpoints, data models, or interfaces the new work might touch
+- Check `_tasks/` for existing task files to understand numbering and avoid conflicts
+- Look for related code that the new feature will interact with — this informs dependencies and Technical Notes
 
 ### 2. Discuss the Feature
 
-Engage the developer in conversation:
-- Ask what feature or behavior they want to build
-- Clarify the scope — what's in, what's out
-- Consider both the user-facing value and technical constraints
+Engage the developer in conversation to nail down scope. Your goal is to reach the point where you could explain every AC to a stranger and they'd know exactly what to test.
+
+- If `$ARGUMENTS` provided a feature description, start by restating your understanding and ask what's missing
+- Clarify scope — what's in, what's explicitly out
+- Surface technical constraints discovered during exploration ("I noticed the auth module uses middleware pattern X — should we follow that?")
 - Identify dependencies between pieces of work
-- Ask clarifying questions until you have enough to write testable stories
+- Keep asking until you can write ACs with specific inputs, outputs, and edge cases
 
 ### 3. Break Into Stories
 
-Decompose the feature into small, testable stories:
-- Each story should be independently testable
-- Each story should deliver a clear unit of value or behavior
-- Order stories so dependencies flow naturally (earlier stories first)
-- Keep stories small — if an AC list grows beyond 5-6 items, split the story
+Decompose the feature into small, independently testable stories. Slice **vertically** — each story should cut through the full stack for one behavior, not split by layer (don't create separate "add DB model", "add API route", "add UI" stories unless they genuinely have independent value).
+
+- Each story delivers a clear, testable behavior
+- Order stories so dependencies flow naturally (foundational behaviors first)
+- If a story has more than 4-5 ACs, it probably covers multiple behaviors — split it
+- If two stories always need to ship together to be useful, merge them
+- For refactoring: pair `[REMOVE]` stories with their replacement stories, or combine them into a single story when the removal and addition are tightly coupled
 
 ### 4. Write Task Files
 
@@ -41,36 +55,54 @@ Create numbered task files in the `_tasks/` directory at the project root:
 - Create the `_tasks/` directory if it doesn't exist
 - Name files as `001-short-slug.md`, `002-another-slug.md`, etc.
 - Continue numbering from the highest existing task file
-- Use the template from `.claude/skills/tdd-plan/template.md`
+- Use the template in this skill's `template.md`
 
 For each task file:
 - Set `status: pending`
 - Set `priority` based on discussion with the developer
 - Set `depends-on` to reference task numbers this story requires (e.g., `[1]` or `[1, 3]`)
-- Write a clear Description explaining what and why
-- Write Acceptance Criteria where **every AC is concrete enough to derive a test assertion from**
-  - Use the format: `Given [context], when [action], then [result]`
-  - For removing existing behavior, use the format: `[REMOVE] [description of what is being removed and where it lives]`
-    - Be specific: name the functions, classes, endpoints, files, or modules being removed
-    - These ACs tell Red to delete tests, Green to delete code, and Verify to confirm absence
-  - A single task can mix both formats (e.g., replacing a feature = regular ACs for the new + `[REMOVE]` ACs for the old)
-  - Avoid vague ACs like "should work correctly" — be specific about inputs and outputs
-- Add Technical Notes with implementation hints, relevant file paths, API contracts
-- Add Notes for edge cases, constraints, or references
+- Write a clear **Description** explaining what and why — include enough context that someone unfamiliar with the conversation could understand the intent
+- Write **Acceptance Criteria** where every AC is concrete enough to derive a test assertion from
+
+**AC format — Given/When/Then:**
+```
+- [ ] Given [specific precondition], when [specific action], then [specific observable result]
+```
+
+Strong ACs name concrete values, functions, or behaviors. Compare:
+
+| Weak | Strong |
+|------|--------|
+| `Given a user, when they log in, then it works` | `Given a user with valid credentials, when POST /auth/login is called with email and password, then the response is 200 with a JWT token` |
+| `Given invalid input, when submitted, then show an error` | `Given an email field with "not-an-email", when the form is submitted, then a validation error "Invalid email format" is displayed below the field` |
+
+**AC format — [REMOVE]:**
+```
+- [ ] [REMOVE] [what is being removed] in [where it lives]
+```
+
+Be specific — name the functions, classes, endpoints, files, or modules being removed. These ACs tell Red to delete tests, Green to delete code, and Verify to confirm absence via Grep.
+
+A single task can mix both formats (e.g., replacing a feature = Given/When/Then ACs for the new behavior + `[REMOVE]` ACs for the old).
+
+- Add **Technical Notes** with implementation hints: relevant file paths, existing functions to extend, API contracts, data structures. Reference specific code discovered during exploration.
+- Add **Notes** for edge cases, constraints, or open questions.
 
 ### 5. Summarize
 
 After writing all task files, present a summary:
-- List all created tasks with their titles and dependencies
-- Highlight the recommended order of implementation
+- List all created tasks with their titles and priorities
+- Show the dependency graph (which tasks depend on which)
+- Highlight the recommended implementation order
 - Note any open questions or decisions deferred
 
 ## Constraints
 
 - Do NOT write any code (tests or implementation) — only task files
 - Every AC must be specific enough to write a test assertion from
-- Keep stories small and focused
+- Keep stories small and vertically sliced
 - Respect existing project conventions discovered during exploration
+- Reference concrete file paths and code patterns in Technical Notes
 
 ## Tools Available
 

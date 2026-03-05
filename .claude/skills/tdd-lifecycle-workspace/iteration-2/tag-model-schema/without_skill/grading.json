@@ -1,0 +1,152 @@
+{
+  "eval": "tag-model-schema",
+  "config": "without_skill",
+  "phases": {
+    "red": {
+      "results": [
+        {
+          "assertion": "R1: AC coverage",
+          "passed": true,
+          "evidence": "Found 14 tests for 10 regular ACs"
+        },
+        {
+          "assertion": "R2: Tests fail",
+          "passed": true,
+          "evidence": "Tests fail as expected (exit code 1, 10 failures)"
+        },
+        {
+          "assertion": "R3: Right failure reason",
+          "passed": true,
+          "evidence": "Tests fail with assertion errors (correct Red behavior)"
+        },
+        {
+          "assertion": "R4: Follows conventions",
+          "passed": true,
+          "evidence": "All 2 test files follow Jest conventions"
+        },
+        {
+          "assertion": "R5: Status in-progress",
+          "passed": true,
+          "evidence": "Status correctly set to in-progress"
+        },
+        {
+          "assertion": "R6: No source changes",
+          "passed": true,
+          "evidence": "No source or config files modified"
+        },
+        {
+          "assertion": "R7: Existing tests pass",
+          "passed": true,
+          "evidence": "Pre-existing bookmarks.test.js passes"
+        },
+        {
+          "assertion": "R8: [REMOVE] tests deleted",
+          "passed": true,
+          "evidence": "N/A \u2014 no [REMOVE] ACs in this eval"
+        }
+      ],
+      "summary": {
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "pass_rate": 1.0
+      }
+    },
+    "green": {
+      "results": [
+        {
+          "assertion": "G1: Tests pass",
+          "passed": true,
+          "evidence": "All tests pass"
+        },
+        {
+          "assertion": "G2: Follows patterns",
+          "passed": true,
+          "evidence": "Tag model follows class + static method pattern"
+        },
+        {
+          "assertion": "G3: No test assertions changed",
+          "passed": true,
+          "evidence": "No test assertions changed by Green phase"
+        },
+        {
+          "assertion": "G4: Status in-review",
+          "passed": true,
+          "evidence": "Status correctly set to in-review"
+        },
+        {
+          "assertion": "G5: Minimal code",
+          "passed": true,
+          "evidence": "Code appears minimal and focused"
+        },
+        {
+          "assertion": "G6: Correct file locations",
+          "passed": true,
+          "evidence": "Tag.js in correct location: src/models/"
+        },
+        {
+          "assertion": "G7: [REMOVE] code deleted",
+          "passed": true,
+          "evidence": "N/A \u2014 no [REMOVE] ACs in this eval"
+        },
+        {
+          "assertion": "G8: Dependencies added",
+          "passed": true,
+          "evidence": "N/A \u2014 no new dependencies expected"
+        }
+      ],
+      "summary": {
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "pass_rate": 1.0
+      }
+    },
+    "verify": {
+      "results": [
+        {
+          "assertion": "V1: Tests pass",
+          "passed": true,
+          "evidence": "All tests still pass after Verify"
+        },
+        {
+          "assertion": "V2: No code changes",
+          "passed": true,
+          "evidence": "Only task file modified by Verify"
+        },
+        {
+          "assertion": "V3: Status done",
+          "passed": true,
+          "evidence": "Status correctly set to done"
+        },
+        {
+          "assertion": "V4: Checkboxes checked",
+          "passed": true,
+          "evidence": "All 10 ACs checked off"
+        },
+        {
+          "assertion": "V5: No feedback section",
+          "passed": true,
+          "evidence": "No Feedback section present (clean approval)"
+        },
+        {
+          "assertion": "V6: Verdict explanation",
+          "passed": true,
+          "evidence": "Verdict: approved \u2014 10 ACs verified and checked"
+        }
+      ],
+      "summary": {
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "pass_rate": 1.0
+      }
+    }
+  },
+  "overall": {
+    "passed": 22,
+    "failed": 0,
+    "total": 22,
+    "pass_rate": 1.0
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "skill_name": "tdd-lifecycle",
+  "description": "Tests the full Red→Green→Verify lifecycle with two task types",
+  "evals": [
+    {
+      "id": 1,
+      "name": "tag-model-schema",
+      "type": "additive",
+      "task_file": "001-tag-model-and-schema.md",
+      "description": "Pure additive: 10 Given/When/Then ACs, new Tag model + schema. Tests standard happy path.",
+      "ac_count": 10,
+      "remove_ac_count": 0,
+      "phases": ["red", "green", "verify"]
+    },
+    {
+      "id": 2,
+      "name": "jwt-auth-replace",
+      "type": "mixed",
+      "task_file": "001-jwt-token-verification-in-auth-middleware.md",
+      "description": "Mixed: 5 Given/When/Then + 2 [REMOVE] ACs, modifies existing auth code. Tests deletion workflow.",
+      "ac_count": 7,
+      "remove_ac_count": 2,
+      "phases": ["red", "green", "verify"]
+    }
+  ],
+  "assertions": {
+    "red": {
+      "R1": "Every AC has at least one corresponding test",
+      "R2": "New tests fail (npm test shows failures)",
+      "R3": "Tests fail for right reason (assertion failures, not syntax/import errors)",
+      "R4": "Test files follow project conventions (Jest, supertest, in-memory DB)",
+      "R5": "Task status updated to in-progress",
+      "R6": "No source files modified (only test files)",
+      "R7": "Pre-existing tests still pass",
+      "R8": "[REMOVE] ACs handled — existing tests for removed behavior deleted (jwt-auth only)"
+    },
+    "green": {
+      "G1": "All tests pass (npm test exit code 0)",
+      "G2": "Implementation follows project patterns (static class methods, Express router)",
+      "G3": "No test assertions changed",
+      "G4": "Task status updated to in-review",
+      "G5": "Minimal code (no over-engineering)",
+      "G6": "Files in correct locations (src/models/, src/routes/)",
+      "G7": "[REMOVE] ACs handled — specified code deleted (jwt-auth only)",
+      "G8": "New dependencies added if needed (jwt-auth: jsonwebtoken)"
+    },
+    "verify": {
+      "V1": "Tests still pass after Verify runs",
+      "V2": "No test or source files modified (only task file)",
+      "V3": "Status set to done",
+      "V4": "All AC checkboxes checked (- [x])",
+      "V5": "Feedback section removed/absent (approval path)",
+      "V6": "Verdict explanation present"
+    }
+  }
+}

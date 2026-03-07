@@ -32,20 +32,22 @@ Tell the user:
 
 ### 3. Run the TDD Cycle
 
-Execute the following phases in order, using subagents. If resuming a task, skip phases that already completed (e.g., if resuming at Green, skip Red; if resuming at Verify, skip Red and Green):
+Execute the following phases **in order**, each in its own subagent via the **Agent tool**. If resuming a task, skip phases that already completed (e.g., if resuming at Green, skip Red; if resuming at Verify, skip Red and Green).
+
+Each phase must fully complete before launching the next — they are sequential because each phase depends on the previous phase's output (Green needs Red's tests, Verify needs Green's implementation).
 
 #### 🔴 Red Phase
-- Launch the `tdd-red` subagent to write failing tests for the selected task
+- Use the **Agent tool** with `agent_path=".claude/agents/tdd-red/tdd-red.md"` and prompt: `"Write failing tests for task XXX in _tasks/. Follow your complete process."`
 - If the subagent reports tests pass unexpectedly, stop and report to the user
 - On success, report: "🔴 Red phase complete — failing tests written"
 
 #### 🟢 Green Phase
-- Launch the `tdd-green` subagent to write minimum implementation for the selected task
+- Use the **Agent tool** with `agent_path=".claude/agents/tdd-green/tdd-green.md"` and prompt: `"Write minimum implementation for task XXX in _tasks/. Follow your complete process."`
 - If the subagent cannot make tests pass, stop and report to the user
 - On success, report: "🟢 Green phase complete — all tests passing"
 
 #### 🔍 Verify Phase
-- Launch the `tdd-verify` subagent to review tests and implementation against ACs
+- Use the **Agent tool** with `agent_path=".claude/agents/tdd-verify/tdd-verify.md"` and prompt: `"Verify task XXX from _tasks/. Check tests and implementation against all ACs. Follow your complete process."`
 - If Verify **passes**: report "🔍 Task XXX verified and marked as done" — cycle complete
 - If Verify **rejects with test issues** (Red rejection):
   - Report the feedback summary
@@ -65,9 +67,10 @@ Execute the following phases in order, using subagents. If resuming a task, skip
   - The accumulated feedback
   - Suggest the developer review the task manually
 
-### 5. Commit
+### 5. Commit (mandatory — do not skip)
 
-When the cycle completes successfully, create a git commit:
+Every completed task gets its own git commit. This is essential for traceability — it lets the developer review, revert, or cherry-pick individual tasks. Skipping the commit means the work is effectively lost from the TDD workflow's perspective.
+
 - Run `git status` to discover all modified, added, and untracked files
 - Stage **all** changes: test files, source/implementation files, and the task file in `_tasks/`
 - Use `git add` with explicit file paths (not `git add -A`) to stage each changed file

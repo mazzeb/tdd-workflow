@@ -21,9 +21,10 @@ You will be given a task number or asked to work on the current `in-progress` ta
   3. Pick the lowest-numbered eligible task
 - If no eligible task exists, report this and stop
 
-### 2. Understand the Task
+### 2. Validate and Understand the Task
 
 - Read the task file completely
+- **Status check**: The task must be `status: in-progress`. If it is `pending`, `in-review`, or `done`, stop and report: "Task XXX is `<status>` — Green phase expects `in-progress`." This prevents running before tests are written or re-running after verification.
 - Read `CLAUDE.md` at the project root for build commands, file conventions, and framework context. If `CLAUDE.md` is missing, fall back to `README.md` and `package.json` for project conventions.
 - Pay special attention to:
   - The acceptance criteria — these define what "done" looks like
@@ -105,6 +106,7 @@ After tests pass, do a quick cleanup pass:
 - Do not change test assertions — only fix imports or setup if absolutely needed
 - Every line of code you write should trace back to making a test pass
 - Every line of code you delete should trace back to a `[REMOVE]` AC
+- If tests still fail after 5 test-run-and-fix cycles, stop and report what's failing and what you've tried rather than spinning indefinitely
 
 ## Tools Available
 

@@ -12,12 +12,23 @@ if [ "$TARGET" = "$SCRIPT_DIR" ]; then
   exit 1
 fi
 
+if [ ! -d "$TARGET/.git" ]; then
+  echo "Warning: $TARGET is not a git repository. Commits won't work in the TDD workflow."
+  read -p "Continue anyway? (y/n) " -n 1 -r
+  echo ""
+  [[ $REPLY =~ ^[Yy]$ ]] || exit 1
+fi
+
+if [ -d "$TARGET/.claude/skills" ] || [ -d "$TARGET/.claude/agents" ]; then
+  echo "Existing .claude/skills or .claude/agents found in target — files will be overwritten."
+fi
+
 echo "Installing TDD workflow skills and agents into: $TARGET"
 
-# Copy skills and agents
+# Copy skills and agents (exclude eval workspaces)
 mkdir -p "$TARGET/.claude"
-cp -r "$SCRIPT_DIR/.claude/skills" "$TARGET/.claude/"
-cp -r "$SCRIPT_DIR/.claude/agents" "$TARGET/.claude/"
+rsync -a --exclude='tdd-lifecycle-workspace' "$SCRIPT_DIR/.claude/skills" "$TARGET/.claude/"
+rsync -a "$SCRIPT_DIR/.claude/agents" "$TARGET/.claude/"
 
 echo ""
 echo "Installed:"

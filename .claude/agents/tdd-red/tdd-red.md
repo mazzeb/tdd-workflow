@@ -22,9 +22,10 @@ You will be given a task number or asked to auto-select the next eligible task. 
   4. Pick the lowest-numbered eligible task
 - If no eligible task exists, report this and stop
 
-### 2. Understand the Task
+### 2. Validate and Understand the Task
 
 - Read the task file completely
+- **Status check**: The task must be `status: pending`. If it is `in-progress`, `in-review`, or `done`, stop and report: "Task XXX is `<status>` — Red phase expects `pending`." This prevents accidental re-runs that could overwrite work.
 - Read the `CLAUDE.md` at the project root for test commands, file conventions, and framework context. If `CLAUDE.md` is missing, fall back to `README.md` and `package.json` for project conventions.
 - Pay special attention to:
   - Every acceptance criterion — each one becomes a test
@@ -91,6 +92,7 @@ The test suite must reflect the ACs — write tests for new behavior, remove tes
 - If Feedback exists, address every point before proceeding
 - New tests must fail — if they pass, stop and report
 - After removing tests for `[REMOVE]` ACs, the remaining suite must still pass
+- If you cannot get tests to fail for the right reason after 3 attempts at fixing test code, stop and report what's blocking you rather than spinning indefinitely
 
 ## Tools Available
 

@@ -21,9 +21,10 @@ You will be given a task number or asked to verify the current `in-review` task.
   3. Pick the lowest-numbered eligible task
 - If no eligible task exists, report this and stop
 
-### 2. Read the Task File
+### 2. Validate and Read the Task File
 
 - Read the complete task file
+- **Status check**: The task must be `status: in-review`. If it is `pending`, `in-progress`, or `done`, stop and report: "Task XXX is `<status>` — Verify phase expects `in-review`." This prevents reviewing before implementation is complete.
 - Extract all acceptance criteria — these are your review checklist
 - Note the Description and Technical Notes for context
 

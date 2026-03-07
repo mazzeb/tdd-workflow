@@ -14,17 +14,13 @@ Delegates to the `tdd-red` subagent (Strict QA Engineer persona).
 When the user invokes `/tdd-red`, delegate the work to the `tdd-red` subagent:
 
 1. Parse the optional task number argument from `$ARGUMENTS`
-2. Launch the `tdd-red` subagent with the following prompt:
-
----
+2. Use the **Agent tool** with `agent_path=".claude/agents/tdd-red/tdd-red.md"` and the following prompt:
 
 **If task number provided:**
-> Read the task file for task $TASK_NUMBER in the `_tasks/` directory. Write failing tests for all its acceptance criteria. Follow your complete process as defined in your agent instructions.
+> Read the task file for task $TASK_NUMBER in the `_tasks/` directory. Write failing tests for all its acceptance criteria. Follow your complete process.
 
 **If no task number:**
-> Auto-select the next eligible pending task from `_tasks/`. Write failing tests for all its acceptance criteria. Follow your complete process as defined in your agent instructions.
-
----
+> Auto-select the next eligible pending task from `_tasks/`. Write failing tests for all its acceptance criteria. Follow your complete process.
 
 3. Report the subagent's results back to the user:
    - Which task was selected

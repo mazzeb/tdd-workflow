@@ -15,8 +15,9 @@ README.md                           # User-facing documentation
     tdd-green/SKILL.md              # /tdd-green — delegator → tdd-green agent
     tdd-verify/SKILL.md             # /tdd-verify — delegator → tdd-verify agent
     tdd-next-task/SKILL.md          # /tdd-next-task — orchestrator (Red→Green→Verify loop)
-    tdd-show-tasks/SKILL.md         # /tdd-show-tasks — read-only dashboard
     tdd-all-tasks/SKILL.md          # /tdd-all-tasks — runs all remaining tasks
+    tdd-quick/SKILL.md              # /tdd-quick — plan + Red→Green→Verify for one small change
+    tdd-show-tasks/SKILL.md         # /tdd-show-tasks — read-only dashboard
   agents/
     tdd-red/tdd-red.md              # Strict QA Engineer persona
     tdd-green/tdd-green.md          # Pragmatic Developer persona
@@ -43,7 +44,7 @@ mkdir /tmp/tdd-test && ./install.sh /tmp/tdd-test && ls -R /tmp/tdd-test/.claude
 - Three skill types:
   - **Self-contained** (`tdd-plan`, `tdd-show-tasks`) — has own Persona, runs directly
   - **Delegator** (`tdd-red`, `tdd-green`, `tdd-verify`) — launches a subagent, prompt above `---` is for the skill, below `---` is the agent prompt
-  - **Orchestrator** (`tdd-next-task`, `tdd-all-tasks`) — coordinates multiple skill/agent invocations in sequence
+  - **Orchestrator** (`tdd-next-task`, `tdd-all-tasks`, `tdd-quick`) — coordinates multiple skill/agent invocations in sequence
 
 ### Agents (tdd-*.md)
 - Title: `# TDD Phase Agent — Persona Name`

@@ -30,9 +30,11 @@ This copies the skills and agents into your project's `.claude/` directory. Afte
 | `/tdd-green [N]` | Write minimum implementation to pass tests |
 | `/tdd-verify [N]` | Verify tests and implementation against acceptance criteria |
 | `/tdd-next-task` | Run the full Red → Green → Verify cycle for the next eligible task |
+| `/tdd-all-tasks` | Run all remaining tasks sequentially |
+| `/tdd-quick <description>` | Plan a single task and immediately run Red → Green → Verify |
 | `/tdd-show-tasks` | Show a summary table of all tasks with status and progress |
 
-All commands auto-select the next eligible task if no task number is provided.
+All commands auto-select the next eligible task if no task number is provided. `/tdd-quick` is a shortcut for small changes — it creates one task file and runs the full cycle in a single invocation. For larger features, use `/tdd-plan` to break the work into multiple stories first.
 
 ## Task Files
 
@@ -102,6 +104,10 @@ Configure your project's `CLAUDE.md` with:
 │   │   └── SKILL.md          # Verify skill (delegates to subagent)
 │   ├── tdd-next-task/
 │   │   └── SKILL.md          # Orchestrator skill
+│   ├── tdd-all-tasks/
+│   │   └── SKILL.md          # Run-all orchestrator skill
+│   ├── tdd-quick/
+│   │   └── SKILL.md          # Quick single-task orchestrator skill
 │   └── tdd-show-tasks/
 │       └── SKILL.md          # Task summary/dashboard skill
 └── agents/

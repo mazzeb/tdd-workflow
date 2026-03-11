@@ -16,10 +16,23 @@ This copies the skills and agents into your project's `.claude/` directory. Afte
 
 ## Cycle
 
+Each task has a `type` that determines which phases run:
+
+| Type | Workflow | Use for |
+|------|----------|---------|
+| `feature` | Red → Green → Verify | New behavior that needs tests first |
+| `bugfix` | Red → Green → Verify | Bugs reproduced with a failing test |
+| `refactor` | Green → Verify | Restructuring code while existing tests stay green |
+| `test` | Red → Verify | Adding or improving test coverage only |
+| `chore` | Green → Verify | Config, deps, CI, docs |
+
+**Phases:**
 1. **Plan** — Define features, break into stories with testable acceptance criteria
 2. **Red** — Update the test suite to match the desired end state (write failing tests for new behavior, remove tests for removed behavior)
 3. **Green** — Write minimum implementation to pass tests, remove dead code for removals
 4. **Verify** — Review tests and implementation against the spec, confirm removals are complete
+
+Verify always runs. On rejection, the task loops back to the appropriate phase until it passes (max 3 retries).
 
 ## Commands
 
@@ -29,9 +42,9 @@ This copies the skills and agents into your project's `.claude/` directory. Afte
 | `/tdd-red [N]` | Write failing tests for a task |
 | `/tdd-green [N]` | Write minimum implementation to pass tests |
 | `/tdd-verify [N]` | Verify tests and implementation against acceptance criteria |
-| `/tdd-next-task` | Run the full Red → Green → Verify cycle for the next eligible task |
+| `/tdd-next-task` | Run the appropriate workflow for the next eligible task |
 | `/tdd-all-tasks` | Run all remaining tasks sequentially |
-| `/tdd-quick <description>` | Plan a single task and immediately run Red → Green → Verify |
+| `/tdd-quick <description>` | Plan a single task and immediately run its workflow |
 | `/tdd-show-tasks` | Show a summary table of all tasks with status and progress |
 
 All commands auto-select the next eligible task if no task number is provided. `/tdd-quick` is a shortcut for small changes — it creates one task file and runs the full cycle in a single invocation. For larger features, use `/tdd-plan` to break the work into multiple stories first.
@@ -61,6 +74,7 @@ Each task file has frontmatter with status tracking:
 ```yaml
 ---
 status: pending          # pending → in-progress → in-review → done
+type: feature            # feature | bugfix | refactor | test | chore
 priority: medium
 depends-on: []           # task numbers this depends on
 ---

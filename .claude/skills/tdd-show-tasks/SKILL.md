@@ -22,6 +22,7 @@ When the user invokes `/tdd-show-tasks`, follow this process:
 For each task file, extract:
 - **Number** and **slug** from the filename (e.g., `003-auth-login.md` → `003`, `auth-login`)
 - **Title** from the first `# ` heading
+- **Type** from frontmatter (default `feature` if missing)
 - **Status** from frontmatter (`pending`, `in-progress`, `in-review`, or `done`)
 - **Priority** from frontmatter
 - **Dependencies** from frontmatter `depends-on` list
@@ -30,11 +31,11 @@ For each task file, extract:
 Present the tasks as a markdown table sorted by task number:
 
 ```
-| #   | Task                | Status      | Priority | Deps |
-|-----|---------------------|-------------|----------|------|
-| 001 | Story title         | pending     | high     | —    |
-| 002 | Another story       | in-progress | medium   | 001  |
-| 003 | Third story         | done        | medium   | 1, 2 |
+| #   | Task                | Type     | Status      | Priority | Deps |
+|-----|---------------------|----------|-------------|----------|------|
+| 001 | Story title         | feature  | pending     | high     | —    |
+| 002 | Restructure auth    | refactor | in-progress | medium   | 001  |
+| 003 | Third story         | chore    | done        | medium   | 1, 2 |
 ```
 
 Use these status indicators:

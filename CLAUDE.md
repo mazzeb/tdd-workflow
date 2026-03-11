@@ -54,13 +54,22 @@ mkdir /tmp/tdd-test && ./install.sh /tmp/tdd-test && ls -R /tmp/tdd-test/.claude
 
 ### Task Files (_tasks/)
 - Naming: `NNN-slug-description.md` (three-digit zero-padded)
-- Frontmatter: `status` (pending/in-progress/in-review/done), `priority`, `depends-on`
+- Frontmatter: `status` (pending/in-progress/in-review/done), `type` (feature/bugfix/refactor/test/chore), `priority`, `depends-on`
 - AC formats: `Given/when/then` for behavior, `[REMOVE]` prefix for removal — both with checkboxes
 - Feedback section: added on Verify rejection, cleared on done
 
+### Task Types & Workflows
+- `feature` / `bugfix`: Red → Green → Verify (full TDD cycle)
+- `refactor` / `chore`: Green → Verify (no new tests — existing tests guard correctness)
+- `test`: Red → Verify (test coverage only — no source changes)
+- Default type is `feature` when `type` field is missing (backward compatible)
+- Orchestrators bridge status gaps when phases are skipped (e.g., set `in-progress` before Green when Red was skipped)
+
 ### Status Flow
-- `pending` → Red writes tests → `in-progress` → Green implements → `in-review` → Verify reviews → `done`
-- Verify rejection can revert to `pending` (Red issues) or `in-progress` (Green issues)
+- Full cycle: `pending` → Red → `in-progress` → Green → `in-review` → Verify → `done`
+- Without Red: `pending` → (orchestrator bridges to `in-progress`) → Green → `in-review` → Verify → `done`
+- Without Green: `pending` → Red → `in-progress` → (orchestrator bridges to `in-review`) → Verify → `done`
+- Verify rejection routes back to the appropriate phase for the task type
 
 ## Development Rules
 

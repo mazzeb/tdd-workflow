@@ -1,5 +1,6 @@
 ---
 status: pending
+type: feature
 priority: medium
 depends-on: []
 ---

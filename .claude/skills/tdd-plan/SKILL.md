@@ -63,6 +63,18 @@ Create numbered task files in the `_tasks/` directory at the project root:
 
 For each task file:
 - Set `status: pending`
+- Set `type` based on the nature of the work — this determines which workflow phases run:
+
+| Type | Workflow | When to use |
+|------|----------|-------------|
+| `feature` | Red → Green → Verify | New behavior that needs tests written first |
+| `bugfix` | Red → Green → Verify | Bug that should be reproduced with a failing test, then fixed |
+| `refactor` | Green → Verify | Restructuring code while existing tests stay green — no new tests needed |
+| `test` | Red → Verify | Adding or improving test coverage only — no source changes |
+| `chore` | Green → Verify | Config, deps, CI, docs, or other non-test-driven changes |
+
+  Default to `feature` when in doubt. Use `refactor` only when existing tests already cover the desired behavior and the task is about restructuring. Use `chore` for changes where writing tests wouldn't add value (CI config, dependency updates, documentation).
+
 - Set `priority` based on discussion with the developer
 - Set `depends-on` to reference task numbers this story requires (e.g., `[1]` or `[1, 3]`)
 - Write a clear **Description** explaining what and why — include enough context that someone unfamiliar with the conversation could understand the intent

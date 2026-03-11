@@ -1,6 +1,6 @@
-# /tdd-next-task — Full Red → Green → Verify Cycle
+# /tdd-next-task — Full TDD Cycle
 
-Orchestrates the complete TDD cycle for the next eligible task, with automatic retry on Verify rejection.
+Orchestrates the appropriate TDD workflow for the next eligible task, with automatic retry on Verify rejection.
 
 ## Usage
 
@@ -8,9 +8,23 @@ Orchestrates the complete TDD cycle for the next eligible task, with automatic r
 /tdd-next-task       # Pick next eligible task and run full cycle
 ```
 
+## Workflow Routing
+
+Each task has a `type` field in its frontmatter that determines which phases run. If `type` is missing, default to `feature`.
+
+| Type | Phases | Status flow |
+|------|--------|-------------|
+| `feature` | Red → Green → Verify | pending → in-progress → in-review → done |
+| `bugfix` | Red → Green → Verify | pending → in-progress → in-review → done |
+| `refactor` | Green → Verify | pending → (bridge to in-progress) → in-review → done |
+| `test` | Red → Verify | pending → in-progress → (bridge to in-review) → done |
+| `chore` | Green → Verify | pending → (bridge to in-progress) → in-review → done |
+
+**"Bridging" status**: When a phase is skipped, the orchestrator must update the task file's status before launching the next agent, because agents validate status on entry. For example, for a `refactor` task, Green expects `in-progress` — so before launching Green, update the task frontmatter from `pending` to `in-progress`.
+
 ## Instructions
 
-When the user invokes `/tdd-next-task`, orchestrate the full TDD cycle:
+When the user invokes `/tdd-next-task`, orchestrate the appropriate TDD cycle:
 
 ### 1. Find the Next Eligible Task
 
@@ -25,44 +39,59 @@ If no task matches any of these, report "No eligible tasks found" and stop.
 ### 2. Report Selection
 
 Tell the user:
-- Which task was selected (number and title)
+- Which task was selected (number, title, and type)
+- Which workflow will run (e.g., "Type: refactor → Green → Verify")
 - Summarize its acceptance criteria
 - Note any dependencies
 - If resuming, state which phase is being resumed and why (e.g., "Resuming at Green — task is `in-progress`")
 
 ### 3. Run the TDD Cycle
 
-Execute the following phases **in order**, each in its own subagent via the **Agent tool**. If resuming a task, skip phases that already completed (e.g., if resuming at Green, skip Red; if resuming at Verify, skip Red and Green).
+Determine the phase sequence from the task's `type` field (default `feature`):
+- **feature / bugfix**: Red → Green → Verify
+- **refactor / chore**: Green → Verify
+- **test**: Red → Verify
 
-Each phase must fully complete before launching the next — they are sequential because each phase depends on the previous phase's output (Green needs Red's tests, Verify needs Green's implementation).
+Execute the phases **in order**, each in its own subagent via the **Agent tool**. If resuming a task, skip phases that already completed (e.g., if resuming at Green, skip Red; if resuming at Verify, skip Red and Green).
+
+Each phase must fully complete before launching the next — they are sequential because each phase depends on the previous phase's output.
 
 **Tracking changed files**: Maintain a cumulative list of files changed across all phases. Each agent outputs a `## Changed Files` section at the end of its response — extract those file paths and accumulate them. This list is used at commit time to stage only the files belonging to this task, which is critical for parallel task execution where multiple tasks may have uncommitted changes simultaneously.
 
-#### 🔴 Red Phase
+**Bridging status before a phase**: Agents validate their expected status on entry. When a phase is skipped, the orchestrator must update the task file's frontmatter to the status the next agent expects:
+- Before Green (when Red was skipped): set `status: in-progress`
+- Before Verify (when Green was skipped): set `status: in-review`
+- Add the task file to the accumulated Changed Files list when bridging
+
+#### 🔴 Red Phase (feature, bugfix, test)
 - Use the **Agent tool** with `agent_path=".claude/agents/tdd-red/tdd-red.md"` and prompt: `"Write failing tests for task XXX in _tasks/. Follow your complete process."`
 - If the subagent reports tests pass unexpectedly, stop and report to the user
 - **Extract the `## Changed Files` list** from the agent's response and add to the accumulated file list
 - On success, report: "🔴 Red phase complete — failing tests written"
 
-#### 🟢 Green Phase
+#### 🟢 Green Phase (feature, bugfix, refactor, chore)
+- **If Red was skipped** (refactor/chore): update the task file's frontmatter to `status: in-progress` before launching this phase
 - Use the **Agent tool** with `agent_path=".claude/agents/tdd-green/tdd-green.md"` and prompt: `"Write minimum implementation for task XXX in _tasks/. Follow your complete process."`
 - If the subagent cannot make tests pass, stop and report to the user
 - **Extract the `## Changed Files` list** from the agent's response and merge into the accumulated file list (deduplicate — the task file will appear in multiple phases)
 - On success, report: "🟢 Green phase complete — all tests passing"
 
-#### 🔍 Verify Phase
+#### 🔍 Verify Phase (all types)
+- **If Green was skipped** (test): update the task file's frontmatter to `status: in-review` before launching this phase
 - Use the **Agent tool** with `agent_path=".claude/agents/tdd-verify/tdd-verify.md"` and prompt: `"Verify task XXX from _tasks/. Check tests and implementation against all ACs. Follow your complete process."`
 - **Extract the `## Changed Files` list** from the agent's response and merge into the accumulated file list
 - If Verify **passes**: report "🔍 Task XXX verified and marked as done" — cycle complete
-- If Verify **rejects with test issues** (Red rejection):
-  - Report the feedback summary
-  - Loop back to Red Phase (keep the accumulated file list — new phases will add to it)
-- If Verify **rejects with implementation issues** (Green rejection):
-  - Report the feedback summary
-  - Loop back to Green Phase (keep the accumulated file list)
-- If Verify **rejects with both issues**:
-  - Report the feedback summary
-  - Loop back to Red Phase (Red goes first, then Green)
+- If Verify **rejects**: route back to the appropriate phase based on task type and rejection reason:
+
+**Rejection routing by type:**
+
+| Type | Test issues (Red rejection) | Implementation issues (Green rejection) | Both |
+|------|----------------------------|----------------------------------------|------|
+| feature / bugfix | → Red | → Green | → Red, then Green |
+| refactor / chore | N/A — route to Green (tests aren't this workflow's responsibility) | → Green | → Green |
+| test | → Red | N/A — route to Red (no implementation phase) | → Red |
+
+When looping back, bridge the status if needed (e.g., for refactor, set `status: in-progress` before relaunching Green, regardless of what Verify set the status to).
 
 ### 4. Retry Limit
 
@@ -96,15 +125,16 @@ After committing:
 
 ## Subagents Used
 
-- `tdd-red` — Writes failing tests (QA Engineer persona)
-- `tdd-green` — Writes minimum implementation (Pragmatic Developer persona)
-- `tdd-verify` — Reviews against ACs (Senior Code Reviewer persona)
+- `tdd-red` — Writes failing tests (QA Engineer persona) — used by: feature, bugfix, test
+- `tdd-green` — Writes minimum implementation (Pragmatic Developer persona) — used by: feature, bugfix, refactor, chore
+- `tdd-verify` — Reviews against ACs (Senior Code Reviewer persona) — used by: all types
 
 ## Error Handling
 
 | Scenario | Action |
 |----------|--------|
 | No eligible tasks | Report and stop |
+| Unknown task type | Treat as `feature` (full Red → Green → Verify) |
 | Red: tests pass unexpectedly | Report and stop — feature may already exist |
 | Green: can't make tests pass | Report and stop — developer needs to intervene |
 | Verify: rejects after 3 retries | Report accumulated feedback and stop |

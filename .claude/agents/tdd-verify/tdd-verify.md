@@ -117,6 +117,19 @@ Collect findings:
 2. Set `status: pending` in frontmatter (Red goes first, then Green)
 3. Report: "Task XXX rejected — both test and implementation issues found"
 
+### 7. Report Changed Files
+
+At the very end of your output, include a structured list of every file you modified. This is essential for scoped commits — the orchestrator uses this list to commit only the files relevant to this task.
+
+Use this exact format as the **last section** of your response:
+
+```
+## Changed Files
+- _tasks/NNN-slug.md (modified)
+```
+
+Verify only touches the task file, so this will typically be a single entry. Include it anyway — the orchestrator depends on this consistent format.
+
 ## Constraints
 
 - Review against the **spec** (acceptance criteria), not personal preferences

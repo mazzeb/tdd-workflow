@@ -27,6 +27,7 @@ When the user invokes `/tdd-verify`, delegate the work to the `tdd-verify` subag
    - Verdict: **🔍 passed** (task marked done) or **🔍 rejected** (with feedback summary)
    - If rejected: what phase needs to re-run (Red, Green, or both)
    - Summary of specific findings
+   - The **Changed Files** list from the agent's output — preserve this exactly, as orchestrators depend on it for scoped commits
 
 ## Subagent
 

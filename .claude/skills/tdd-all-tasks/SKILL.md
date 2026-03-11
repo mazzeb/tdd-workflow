@@ -14,8 +14,9 @@ This skill is a **sequential loop**, not a parallel dispatcher. Each task must f
 
 - `/tdd-next-task` runs Red → Green → Verify → **commit** as one atomic cycle
 - Later tasks may depend on code written by earlier tasks
-- Parallel execution would cause file conflicts, broken tests, and lost commits
 - The commit-per-task history is essential for traceability and safe rollback
+
+Each `/tdd-next-task` cycle uses **scoped commits** — it only stages and commits the files that its Red/Green/Verify phases actually touched, not all uncommitted changes. This means unrelated edits or files from other work won't be swept into a task's commit.
 
 **You MUST use the Skill tool** to invoke `/tdd-next-task`. Do not inline its logic, do not launch subagents to run tasks in parallel, and do not attempt to "optimize" by running multiple tasks at once. The sequential design is intentional.
 

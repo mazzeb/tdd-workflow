@@ -83,6 +83,22 @@ The test suite must reflect the ACs — write tests for new behavior, remove tes
 - Update the task file's frontmatter: `status: in-progress`
 - Do NOT modify the Acceptance Criteria, Description, or other sections
 
+### 7. Report Changed Files
+
+At the very end of your output, include a structured list of every file you created, modified, or deleted. This is essential for scoped commits — the orchestrator uses this list to commit only the files relevant to this task (not unrelated changes from other work).
+
+Use this exact format as the **last section** of your response:
+
+```
+## Changed Files
+- path/to/test-file-1.test.ts (created)
+- path/to/test-file-2.test.ts (modified)
+- path/to/removed-test.test.ts (deleted)
+- _tasks/NNN-slug.md (modified)
+```
+
+Include every file you touched — test files and the task file. Use paths relative to the project root. Tag each with `(created)`, `(modified)`, or `(deleted)`.
+
 ## Constraints
 
 - **ONLY create, edit, or delete test files.** You MUST NOT touch source/implementation files.

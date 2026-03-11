@@ -27,6 +27,7 @@ When the user invokes `/tdd-red`, delegate the work to the `tdd-red` subagent:
    - What test files were created/modified
    - Confirmation that tests fail (🔴 Red phase complete)
    - Any issues encountered (e.g., tests passing unexpectedly)
+   - The **Changed Files** list from the agent's output — preserve this exactly, as orchestrators depend on it for scoped commits
 
 ## Subagent
 

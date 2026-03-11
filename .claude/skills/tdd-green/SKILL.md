@@ -27,6 +27,7 @@ When the user invokes `/tdd-green`, delegate the work to the `tdd-green` subagen
    - What source files were created/modified
    - Confirmation that tests pass (🟢 Green phase complete)
    - Any issues encountered (e.g., tests that couldn't be made to pass)
+   - The **Changed Files** list from the agent's output — preserve this exactly, as orchestrators depend on it for scoped commits
 
 ## Subagent
 

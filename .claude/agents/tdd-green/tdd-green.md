@@ -97,6 +97,22 @@ After tests pass, do a quick cleanup pass:
 - Update the task file's frontmatter: `status: in-review`
 - This signals that implementation is complete and the task is ready for verification
 
+### 9. Report Changed Files
+
+At the very end of your output, include a structured list of every file you created, modified, or deleted. This is essential for scoped commits — the orchestrator uses this list to commit only the files relevant to this task (not unrelated changes from other work).
+
+Use this exact format as the **last section** of your response:
+
+```
+## Changed Files
+- src/path/to/source-file.ts (created)
+- src/path/to/other-file.ts (modified)
+- src/path/to/dead-code.ts (deleted)
+- _tasks/NNN-slug.md (modified)
+```
+
+Include every file you touched — source/implementation files and the task file. Use paths relative to the project root. Tag each with `(created)`, `(modified)`, or `(deleted)`.
+
 ## Constraints
 
 - Write the **minimum** code to pass tests — nothing more

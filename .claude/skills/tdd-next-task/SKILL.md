@@ -36,25 +36,30 @@ Execute the following phases **in order**, each in its own subagent via the **Ag
 
 Each phase must fully complete before launching the next — they are sequential because each phase depends on the previous phase's output (Green needs Red's tests, Verify needs Green's implementation).
 
+**Tracking changed files**: Maintain a cumulative list of files changed across all phases. Each agent outputs a `## Changed Files` section at the end of its response — extract those file paths and accumulate them. This list is used at commit time to stage only the files belonging to this task, which is critical for parallel task execution where multiple tasks may have uncommitted changes simultaneously.
+
 #### 🔴 Red Phase
 - Use the **Agent tool** with `agent_path=".claude/agents/tdd-red/tdd-red.md"` and prompt: `"Write failing tests for task XXX in _tasks/. Follow your complete process."`
 - If the subagent reports tests pass unexpectedly, stop and report to the user
+- **Extract the `## Changed Files` list** from the agent's response and add to the accumulated file list
 - On success, report: "🔴 Red phase complete — failing tests written"
 
 #### 🟢 Green Phase
 - Use the **Agent tool** with `agent_path=".claude/agents/tdd-green/tdd-green.md"` and prompt: `"Write minimum implementation for task XXX in _tasks/. Follow your complete process."`
 - If the subagent cannot make tests pass, stop and report to the user
+- **Extract the `## Changed Files` list** from the agent's response and merge into the accumulated file list (deduplicate — the task file will appear in multiple phases)
 - On success, report: "🟢 Green phase complete — all tests passing"
 
 #### 🔍 Verify Phase
 - Use the **Agent tool** with `agent_path=".claude/agents/tdd-verify/tdd-verify.md"` and prompt: `"Verify task XXX from _tasks/. Check tests and implementation against all ACs. Follow your complete process."`
+- **Extract the `## Changed Files` list** from the agent's response and merge into the accumulated file list
 - If Verify **passes**: report "🔍 Task XXX verified and marked as done" — cycle complete
 - If Verify **rejects with test issues** (Red rejection):
   - Report the feedback summary
-  - Loop back to Red Phase
+  - Loop back to Red Phase (keep the accumulated file list — new phases will add to it)
 - If Verify **rejects with implementation issues** (Green rejection):
   - Report the feedback summary
-  - Loop back to Green Phase
+  - Loop back to Green Phase (keep the accumulated file list)
 - If Verify **rejects with both issues**:
   - Report the feedback summary
   - Loop back to Red Phase (Red goes first, then Green)
@@ -71,12 +76,15 @@ Each phase must fully complete before launching the next — they are sequential
 
 Every completed task gets its own git commit. This is essential for traceability — it lets the developer review, revert, or cherry-pick individual tasks. Skipping the commit means the work is effectively lost from the TDD workflow's perspective.
 
-- Run `git status` to discover all modified, added, and untracked files
-- Stage **all** changes: test files, source/implementation files, and the task file in `_tasks/`
-- Use `git add` with explicit file paths (not `git add -A`) to stage each changed file
-- Verify with `git status` that all expected files are staged before committing
+**Scoped commits**: Only stage files that belong to this task. The accumulated `Changed Files` list from the Red, Green, and Verify phases tells you exactly which files to commit. This prevents accidentally committing unrelated changes (e.g., from a parallel task or manual edits).
+
+- Use `git add` with the **exact file paths from the accumulated Changed Files list** — do not use `git add -A` or `git add .`
+- For files tagged `(deleted)` in the list, use `git add` on them too (git stages deletions this way)
+- After staging, run `git status` and verify that **only** the task's files are staged. If unexpected files appear in the staged area, unstage them with `git reset HEAD <file>` before committing
 - Create a commit with message: `feat(TDD-<number>): <task title>`
 - Do NOT push to remote
+
+**Fallback**: If the agents didn't produce a `## Changed Files` section (e.g., older agent versions), fall back to `git status` to discover changes — but log a warning that scoped tracking wasn't available.
 
 ### 6. Completion
 

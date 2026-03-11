@@ -56,19 +56,24 @@ Create a single task file in `_tasks/` using the template from this skill's sibl
 
 Execute the TDD cycle exactly as `/tdd-next-task` does — each phase runs sequentially in its own subagent via the **Agent tool**.
 
+**Tracking changed files**: Maintain a cumulative list of files changed across all phases. Each agent outputs a `## Changed Files` section at the end of its response — extract those file paths and accumulate them. This list is used at commit time to stage only the files belonging to this task.
+
 #### 🔴 Red Phase
 - Use the **Agent tool** with `agent_path=".claude/agents/tdd-red/tdd-red.md"` and prompt: `"Write failing tests for task NNN in _tasks/. Follow your complete process."`
 - If tests pass unexpectedly, stop and report to the user
+- **Extract the `## Changed Files` list** from the agent's response and start the accumulated file list
 
 #### 🟢 Green Phase
 - Use the **Agent tool** with `agent_path=".claude/agents/tdd-green/tdd-green.md"` and prompt: `"Write minimum implementation for task NNN in _tasks/. Follow your complete process."`
 - If tests can't pass, stop and report to the user
+- **Extract the `## Changed Files` list** and merge into the accumulated file list (deduplicate)
 
 #### 🔍 Verify Phase
 - Use the **Agent tool** with `agent_path=".claude/agents/tdd-verify/tdd-verify.md"` and prompt: `"Verify task NNN from _tasks/. Check tests and implementation against all ACs. Follow your complete process."`
+- **Extract the `## Changed Files` list** and merge into the accumulated file list
 - If Verify **passes**: cycle complete
-- If Verify **rejects with test issues**: loop back to Red
-- If Verify **rejects with implementation issues**: loop back to Green
+- If Verify **rejects with test issues**: loop back to Red (keep accumulated file list)
+- If Verify **rejects with implementation issues**: loop back to Green (keep accumulated file list)
 - If Verify **rejects with both**: loop back to Red, then Green
 
 Maximum **3 retry loops**. If still failing, stop and report the accumulated feedback.
@@ -77,10 +82,12 @@ Maximum **3 retry loops**. If still failing, stop and report the accumulated fee
 
 Every completed task gets its own git commit for traceability.
 
-- Run `git status` to discover all changed and untracked files
-- Stage all changes with explicit file paths (test files, source files, task file) — not `git add -A`
+- Use `git add` with the **exact file paths from the accumulated Changed Files list** — do not use `git add -A` or `git add .`
+- For files tagged `(deleted)`, use `git add` on them too (git stages deletions)
+- After staging, run `git status` and verify only this task's files are staged. Unstage unexpected files with `git reset HEAD <file>`
 - Commit with message: `feat(TDD-<number>): <task title>`
 - Do NOT push to remote
+- **Fallback**: If agents didn't produce `## Changed Files`, fall back to `git status` but log a warning
 
 ### 6. Report
 

@@ -52,6 +52,58 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "Committed."
 fi
 
+# Inject TDD workflow enforcement block into CLAUDE.md
+TDD_BLOCK_MARKER="<!-- TDD-WORKFLOW-RULES -->"
+CLAUDE_MD="$TARGET/CLAUDE.md"
+
+inject_tdd_block() {
+  cat <<'TDDEOF'
+
+<!-- TDD-WORKFLOW-RULES -->
+## TDD Workflow Rules
+
+All implementation work in this project follows the TDD workflow. These rules apply to every conversation, whether or not a `/tdd-` command was explicitly invoked.
+
+### Always plan before implementing
+- When asked to implement, add, fix, or refactor something, use `/tdd-plan` (or `/tdd-quick` for small, single-behavior changes) to create task files first.
+- Then use `/tdd-next-task` or `/tdd-all-tasks` to execute tasks through the Red → Green → Verify cycle.
+- Never write implementation code without a corresponding task file in `_tasks/`.
+- Never write tests and implementation code in the same step — they are separate phases (Red writes tests, Green writes implementation).
+
+### Respect the planning phase
+- When `/tdd-plan` is active and has asked the developer clarifying questions, **do not proceed until they answer**. Stay in the planning conversation.
+- Never start implementing, writing tests, or creating task files while planning questions are still unanswered.
+- Planning feels slow but prevents expensive rework downstream. Incomplete plans produce vague acceptance criteria, which produce wrong tests, which produce wrong code.
+
+### Workflow commands
+| Command | Purpose |
+|---------|---------|
+| `/tdd-plan` | Plan and create task files (start here) |
+| `/tdd-quick` | Plan + implement a single small change |
+| `/tdd-next-task` | Execute the next pending task |
+| `/tdd-all-tasks` | Execute all remaining tasks |
+| `/tdd-show-tasks` | Show task status dashboard |
+<!-- /TDD-WORKFLOW-RULES -->
+TDDEOF
+}
+
+if [ -f "$CLAUDE_MD" ]; then
+  if grep -q "$TDD_BLOCK_MARKER" "$CLAUDE_MD"; then
+    # Replace existing block
+    # Use awk to remove old block and append new one
+    awk "/$TDD_BLOCK_MARKER/{found=1} found && /<!-- \/TDD-WORKFLOW-RULES -->/{found=0; next} !found" "$CLAUDE_MD" > "$CLAUDE_MD.tmp"
+    mv "$CLAUDE_MD.tmp" "$CLAUDE_MD"
+    inject_tdd_block >> "$CLAUDE_MD"
+    echo "Updated TDD workflow rules in CLAUDE.md"
+  else
+    inject_tdd_block >> "$CLAUDE_MD"
+    echo "Added TDD workflow rules to CLAUDE.md"
+  fi
+else
+  inject_tdd_block > "$CLAUDE_MD"
+  echo "Created CLAUDE.md with TDD workflow rules"
+fi
+
 echo ""
 echo "Next steps:"
 echo "  1. Add test commands and file conventions to your project's CLAUDE.md"

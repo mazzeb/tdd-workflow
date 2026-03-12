@@ -5,7 +5,7 @@ This repo contains reusable TDD skills and subagents for Claude Code. It is **no
 ## Project Structure
 
 ```
-install.sh                          # Copies skills/agents into target project
+install.sh                          # Copies skills/agents into target project + injects CLAUDE.md rules
 README.md                           # User-facing documentation
 .claude/
   skills/

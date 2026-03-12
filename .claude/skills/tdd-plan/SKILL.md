@@ -43,6 +43,16 @@ Engage the developer in conversation to nail down scope. Your goal is to reach t
 - Identify dependencies between pieces of work
 - Keep asking until you can write ACs with specific inputs, outputs, and edge cases
 
+**This is a conversation, not a monologue.** After asking questions, **stop and wait for the developer to respond**. Do not answer your own questions. Do not proceed to step 3 while any question is unanswered. The planning phase is only as good as the information it's built on — rushing past unclear scope leads to vague ACs that waste everyone's time in the Red/Green/Verify cycle.
+
+Readiness check before moving on — you should be able to answer **all** of these:
+- What are the concrete inputs and outputs for each behavior?
+- What are the edge cases and error scenarios?
+- What's explicitly out of scope?
+- Which existing code will this interact with?
+
+If you can't confidently answer all four, you're not done discussing. Ask the developer.
+
 ### 3. Break Into Stories
 
 Decompose the feature into small, independently testable stories. Slice **vertically** — each story should cut through the full stack for one behavior, not split by layer (don't create separate "add DB model", "add API route", "add UI" stories unless they genuinely have independent value).
@@ -116,6 +126,7 @@ After writing all task files, present a summary:
 
 - **No code** — do not write tests, implementation, or any source code. Only task files in `_tasks/`.
 - **Stop after summarizing** — once you've written task files and presented the summary, you are done. Do not proceed to implementation, do not offer to start coding, do not run `/tdd-next-task` or any other skill.
+- **Never skip the conversation** — if you asked the developer a question, your next action is to wait for their answer. Do not assume answers, do not proceed with guesses, do not start writing task files while questions are pending. Planning with incomplete information produces weak ACs that cause rework downstream.
 - Every AC must be specific enough to write a test assertion from
 - Keep stories small and vertically sliced
 - Respect existing project conventions discovered during exploration

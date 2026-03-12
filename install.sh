@@ -69,6 +69,7 @@ All implementation work in this project follows the TDD workflow. These rules ap
 - Then use `/tdd-next-task` or `/tdd-all-tasks` to execute tasks through the Red → Green → Verify cycle.
 - Never write implementation code without a corresponding task file in `_tasks/`.
 - Never write tests and implementation code in the same step — they are separate phases (Red writes tests, Green writes implementation).
+- **This applies even when other skills are triggered.** If a non-TDD skill (e.g., `frontend-design`) would produce code changes, route the request through `/tdd-plan` or `/tdd-quick` first. The other skill's output can inform the plan, but code must still flow through the TDD cycle.
 
 ### Respect the planning phase
 - When `/tdd-plan` is active and has asked the developer clarifying questions, **do not proceed until they answer**. Stay in the planning conversation.

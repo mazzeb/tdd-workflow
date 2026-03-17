@@ -14,8 +14,9 @@ When the user invokes `/tdd-show-tasks`, follow this process:
 
 ### 1. Read All Tasks
 
-- Use Glob to find all `.md` files in the `_tasks/` directory
-- If `_tasks/` doesn't exist or is empty, report "No tasks found. Run /tdd-plan to create some." and stop
+- Use Glob to find all `.md` files directly in `_tasks/` (not subdirectories — exclude `_tasks/_archive/`)
+- If `_tasks/` doesn't exist or has no active `.md` files, report "No tasks found. Run /tdd-plan to create some." and stop
+- Also use Glob to find `.md` files in `_tasks/_archive/` to get the archived count
 
 ### 2. Parse Each Task
 
@@ -47,9 +48,11 @@ Use these status indicators:
 ### 4. Show Summary Counts
 
 Below the table, show:
-- Total tasks
+- Total active tasks (exclude archived)
 - Count per status (e.g., "2 pending, 1 in-progress, 3 done")
-- Next eligible task: first check for `in-review` (resumable at Verify), then `in-progress` (resumable at Green), then lowest-numbered `pending` task whose dependencies are all `done`. Show "All tasks complete!" if none remain
+- Archived task count if any (e.g., "42 archived")
+- Next eligible task: first check for `in-review` (resumable at Verify), then `in-progress` (resumable at Green), then lowest-numbered `pending` task whose dependencies are all `done` or archived. Show "All tasks complete!" if none remain
+- If there are active `done` tasks, suggest: "Run /tdd-archive to archive completed tasks"
 
 ## Constraints
 

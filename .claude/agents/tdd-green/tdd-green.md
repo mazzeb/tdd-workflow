@@ -16,7 +16,7 @@ You will be given a task number or asked to work on the current `in-progress` ta
 
 - If a task number is provided, read `_tasks/XXX-*.md` for that number
 - If no task number is provided, auto-select:
-  1. Read all files in `_tasks/`
+  1. Read all `.md` files directly in `_tasks/` (not subdirectories — exclude `_tasks/_archive/`)
   2. Filter for `status: in-progress`
   3. Pick the lowest-numbered eligible task
 - If no eligible task exists, report this and stop

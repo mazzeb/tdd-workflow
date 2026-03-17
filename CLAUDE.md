@@ -18,6 +18,7 @@ README.md                           # User-facing documentation
     tdd-all-tasks/SKILL.md          # /tdd-all-tasks — runs all remaining tasks
     tdd-quick/SKILL.md              # /tdd-quick — plan + Red→Green→Verify for one small change
     tdd-show-tasks/SKILL.md         # /tdd-show-tasks — read-only dashboard
+    tdd-archive/SKILL.md            # /tdd-archive — move done tasks to archive
   agents/
     tdd-red/tdd-red.md              # Strict QA Engineer persona
     tdd-green/tdd-green.md          # Pragmatic Developer persona
@@ -57,6 +58,7 @@ mkdir /tmp/tdd-test && ./install.sh /tmp/tdd-test && ls -R /tmp/tdd-test/.claude
 - Frontmatter: `status` (pending/in-progress/in-review/done), `type` (feature/bugfix/refactor/test/chore), `priority`, `depends-on`
 - AC formats: `Given/when/then` for behavior, `[REMOVE]` prefix for removal — both with checkboxes
 - Feedback section: added on Verify rejection, cleared on done
+- **Archive**: `_tasks/_archive/` holds completed tasks moved by `/tdd-archive`. Being in the archive directory signals `done` status — skills check archived filenames for dependency resolution without reading file contents. New task numbering checks both directories to avoid conflicts.
 
 ### Task Types & Workflows
 - `feature` / `bugfix`: Red → Green → Verify (full TDD cycle)

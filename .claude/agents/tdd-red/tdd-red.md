@@ -16,9 +16,9 @@ You will be given a task number or asked to auto-select the next eligible task. 
 
 - If a task number is provided, read `_tasks/XXX-*.md` for that number
 - If no task number is provided, auto-select:
-  1. Read all files in `_tasks/`
+  1. Read all `.md` files directly in `_tasks/` (not subdirectories — exclude `_tasks/_archive/`)
   2. Filter for `status: pending`
-  3. Exclude tasks whose `depends-on` references any task that is not `status: done`
+  3. Exclude tasks whose `depends-on` references any task that is not `status: done` or archived (tasks in `_tasks/_archive/` are implicitly done — check archived task numbers from filenames via Glob, no need to read them)
   4. Pick the lowest-numbered eligible task
 - If no eligible task exists, report this and stop
 

@@ -25,7 +25,7 @@ Build enough context to write precise ACs — this is the same exploration tdd-p
   - The specific code area the change touches
   - Existing test patterns (runner, assertion style, file naming)
   - Related code that might be affected
-- Check `_tasks/` for existing task files to determine the next number
+- Check `_tasks/` and `_tasks/_archive/` for existing task files to determine the next number
 
 ### 2. Scope Check
 

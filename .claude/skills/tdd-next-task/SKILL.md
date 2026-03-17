@@ -28,11 +28,11 @@ When the user invokes `/tdd-next-task`, orchestrate the appropriate TDD cycle:
 
 ### 1. Find the Next Eligible Task
 
-Read all files in `_tasks/` and check for resumable or eligible tasks in this priority order:
+Read all `.md` files directly in `_tasks/` (not subdirectories — exclude `_tasks/_archive/`) and check for resumable or eligible tasks in this priority order:
 
 1. **`in-review`** — implementation complete, pick the lowest-numbered match → resume at Verify phase
 2. **`in-progress`** — tests written, pick the lowest-numbered match → resume at Green phase
-3. **`pending`** — not yet started, exclude tasks whose `depends-on` references any task that is not `status: done`, pick the lowest-numbered eligible match → start full Red → Green → Verify cycle
+3. **`pending`** — not yet started, exclude tasks whose `depends-on` references any task that is not `status: done` **or archived** (tasks in `_tasks/_archive/` are implicitly done — use Glob on `_tasks/_archive/` to get archived task numbers from filenames, no need to read them), pick the lowest-numbered eligible match → start full Red → Green → Verify cycle
 
 If no task matches any of these, report "No eligible tasks found" and stop.
 

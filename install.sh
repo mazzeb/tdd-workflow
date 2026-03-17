@@ -38,6 +38,7 @@ echo "  .claude/skills/tdd-green/"
 echo "  .claude/skills/tdd-verify/"
 echo "  .claude/skills/tdd-next-task/"
 echo "  .claude/skills/tdd-show-tasks/"
+echo "  .claude/skills/tdd-archive/"
 echo "  .claude/skills/tdd-quick/"
 echo "  .claude/agents/tdd-red/"
 echo "  .claude/agents/tdd-green/"
@@ -84,6 +85,7 @@ All implementation work in this project follows the TDD workflow. These rules ap
 | `/tdd-next-task` | Execute the next pending task |
 | `/tdd-all-tasks` | Execute all remaining tasks |
 | `/tdd-show-tasks` | Show task status dashboard |
+| `/tdd-archive` | Archive completed tasks to `_tasks/_archive/` |
 <!-- /TDD-WORKFLOW-RULES -->
 TDDEOF
 }

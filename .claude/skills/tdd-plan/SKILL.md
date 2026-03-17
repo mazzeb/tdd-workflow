@@ -30,7 +30,7 @@ Before discussing anything, build a mental model of the project. What you discov
   - **Existing patterns** — how similar features are structured (routes, handlers, models, etc.)
   - **Test conventions** — test runner, assertion style, fixture patterns, how tests are organized
   - **API surface** — existing endpoints, data models, or interfaces the new work might touch
-- Check `_tasks/` for existing task files to understand numbering and avoid conflicts
+- Check `_tasks/` and `_tasks/_archive/` for existing task files to understand numbering and avoid conflicts
 - Look for related code that the new feature will interact with — this informs dependencies and Technical Notes
 
 ### 2. Discuss the Feature
@@ -68,7 +68,7 @@ Decompose the feature into small, independently testable stories. Slice **vertic
 Create numbered task files in the `_tasks/` directory at the project root:
 - Create the `_tasks/` directory if it doesn't exist
 - Name files as `001-short-slug.md`, `002-another-slug.md`, etc.
-- Continue numbering from the highest existing task file
+- Continue numbering from the highest existing task file (check both `_tasks/` and `_tasks/_archive/`)
 - Use the template in this skill's `template.md`
 
 For each task file:

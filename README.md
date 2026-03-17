@@ -46,6 +46,7 @@ Verify always runs. On rejection, the task loops back to the appropriate phase u
 | `/tdd-all-tasks` | Run all remaining tasks sequentially |
 | `/tdd-quick <description>` | Plan a single task and immediately run its workflow |
 | `/tdd-show-tasks` | Show a summary table of all tasks with status and progress |
+| `/tdd-archive` | Move completed tasks to `_tasks/_archive/` |
 
 All commands auto-select the next eligible task if no task number is provided. `/tdd-quick` is a shortcut for small changes — it creates one task file and runs the full cycle in a single invocation. For larger features, use `/tdd-plan` to break the work into multiple stories first.
 
@@ -55,10 +56,14 @@ Stories live in `_tasks/` as numbered markdown files:
 
 ```
 _tasks/
-├── 001-user-login.md
+├── 001-user-login.md          # active tasks
 ├── 002-session-management.md
-└── 003-password-reset.md
+├── 003-password-reset.md
+└── _archive/                  # completed tasks (moved by /tdd-archive)
+    ├── ...
 ```
+
+Completed tasks can be moved to `_tasks/_archive/` with `/tdd-archive` to keep the active list lean. Archived tasks are still tracked for dependency resolution — being in the archive directory signals `done` status without needing to read the file.
 
 Acceptance criteria use two formats:
 
@@ -122,8 +127,10 @@ Configure your project's `CLAUDE.md` with:
 │   │   └── SKILL.md          # Run-all orchestrator skill
 │   ├── tdd-quick/
 │   │   └── SKILL.md          # Quick single-task orchestrator skill
-│   └── tdd-show-tasks/
-│       └── SKILL.md          # Task summary/dashboard skill
+│   ├── tdd-show-tasks/
+│   │   └── SKILL.md          # Task summary/dashboard skill
+│   └── tdd-archive/
+│       └── SKILL.md          # Archive completed tasks skill
 └── agents/
     ├── tdd-red/
     │   └── tdd-red.md        # QA Engineer subagent

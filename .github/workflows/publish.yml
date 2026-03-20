@@ -39,5 +39,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add package.json
+          git diff --quiet package.json && echo "Version already matches, skipping commit" && exit 0
           git commit -m "chore: bump version to ${{ steps.version.outputs.VERSION }}"
           git push origin HEAD:main

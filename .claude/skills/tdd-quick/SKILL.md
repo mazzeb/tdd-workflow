@@ -67,6 +67,11 @@ Determine the phase sequence from the task's `type` field:
 
 Execute the cycle exactly as `/tdd-next-task` does — each phase runs sequentially in its own subagent via the **Agent tool**.
 
+**Post-phase status validation**: After each agent completes, read the task file and verify the status is one of the valid values (`pending`, `in-progress`, `in-review`, `done`). If the status is anything else (e.g., a phase name like "red", "green", "verify"), fix it to the expected value before proceeding:
+- After Red: status must be `in-progress`
+- After Green: status must be `in-review`
+- After Verify (pass): status must be `done`
+
 **Tracking changed files**: Maintain a cumulative list of files changed across all phases. Each agent outputs a `## Changed Files` section at the end of its response — extract those file paths and accumulate them. This list is used at commit time to stage only the files belonging to this task.
 
 **Bridging status**: When a phase is skipped, update the task file's frontmatter to the status the next agent expects (e.g., set `status: in-progress` before Green when Red was skipped; set `status: in-review` before Verify when Green was skipped). Add the task file to the accumulated Changed Files list when bridging.

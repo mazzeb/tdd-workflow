@@ -68,10 +68,12 @@ mkdir /tmp/tdd-test && ./install.sh /tmp/tdd-test && ls -R /tmp/tdd-test/.claude
 - Orchestrators bridge status gaps when phases are skipped (e.g., set `in-progress` before Green when Red was skipped)
 
 ### Status Flow
+- **Valid status values**: `pending`, `in-progress`, `in-review`, `done` — these are the ONLY allowed values. Never use phase names (red/green/verify) as status values.
 - Full cycle: `pending` → Red → `in-progress` → Green → `in-review` → Verify → `done`
 - Without Red: `pending` → (orchestrator bridges to `in-progress`) → Green → `in-review` → Verify → `done`
 - Without Green: `pending` → Red → `in-progress` → (orchestrator bridges to `in-review`) → Verify → `done`
 - Verify rejection routes back to the appropriate phase for the task type
+- **Orchestrator validation**: After each phase, orchestrators must read the task file and verify the status is a valid value. If an agent set an invalid status, the orchestrator fixes it before proceeding.
 
 ## Development Rules
 

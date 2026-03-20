@@ -94,7 +94,9 @@ After tests pass, do a quick cleanup pass:
 
 ### 8. Update Task Status
 
-- Update the task file's frontmatter: `status: in-review`
+- Update the task file's frontmatter to exactly: `status: in-review`
+- **Important**: The value must be the literal string `in-review`. Do NOT use phase names like "green" or "done" — the only valid status values are: `pending`, `in-progress`, `in-review`, `done`
+- After writing, re-read the frontmatter to confirm the status is `in-review`
 - This signals that implementation is complete and the task is ready for verification
 
 ### 9. Report Changed Files

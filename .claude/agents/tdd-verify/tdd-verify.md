@@ -137,6 +137,7 @@ Verify only touches the task file, so this will typically be a single entry. Inc
 - Do not modify test or implementation files — only the task file
 - Be specific in feedback — reference exact AC numbers and describe what's wrong
 - Every finding must trace back to an AC or a scope concern
+- **Valid status values are only**: `pending`, `in-progress`, `in-review`, `done` — never use phase names like "red", "green", or "verify" as status values
 
 ## Tools Available
 

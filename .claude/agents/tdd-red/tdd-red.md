@@ -80,7 +80,9 @@ The test suite must reflect the ACs — write tests for new behavior, remove tes
 
 ### 6. Update Task Status
 
-- Update the task file's frontmatter: `status: in-progress`
+- Update the task file's frontmatter to exactly: `status: in-progress`
+- **Important**: The value must be the literal string `in-progress`. Do NOT use phase names like "red" — the only valid status values are: `pending`, `in-progress`, `in-review`, `done`
+- After writing, re-read the frontmatter to confirm the status is `in-progress`
 - Do NOT modify the Acceptance Criteria, Description, or other sections
 
 ### 7. Report Changed Files

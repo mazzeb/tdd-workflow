@@ -56,6 +56,11 @@ Execute the phases **in order**, each in its own subagent via the **Agent tool**
 
 Each phase must fully complete before launching the next — they are sequential because each phase depends on the previous phase's output.
 
+**Post-phase status validation**: After each agent completes, read the task file and verify the status is one of the valid values (`pending`, `in-progress`, `in-review`, `done`). If the status is anything else (e.g., a phase name like "red", "green", "verify"), fix it to the expected value before proceeding:
+- After Red: status must be `in-progress`
+- After Green: status must be `in-review`
+- After Verify (pass): status must be `done`
+
 **Tracking changed files**: Maintain a cumulative list of files changed across all phases. Each agent outputs a `## Changed Files` section at the end of its response — extract those file paths and accumulate them. This list is used at commit time to stage only the files belonging to this task, which is critical for parallel task execution where multiple tasks may have uncommitted changes simultaneously.
 
 **Bridging status before a phase**: Agents validate their expected status on entry. When a phase is skipped, the orchestrator must update the task file's frontmatter to the status the next agent expects:

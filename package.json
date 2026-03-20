@@ -1,6 +1,6 @@
 {
   "name": "@mazzeb/tdd-workflow",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Reusable test-driven development cycle for Claude Code projects",
   "bin": {
     "tdd-workflow": "bin/cli.js"

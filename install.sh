@@ -43,16 +43,6 @@ echo "  .claude/skills/tdd-quick/"
 echo "  .claude/agents/tdd-red/"
 echo "  .claude/agents/tdd-green/"
 echo "  .claude/agents/tdd-verify/"
-echo ""
-read -p "Commit installed files to git? (y/n) " -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  cd "$TARGET"
-  git add .claude/skills .claude/agents
-  git commit -m "update/install tdd-workflow"
-  echo "Committed."
-fi
-
 # Inject TDD workflow enforcement block into CLAUDE.md
 TDD_BLOCK_MARKER="<!-- TDD-WORKFLOW-RULES -->"
 CLAUDE_MD="$TARGET/CLAUDE.md"
@@ -105,6 +95,16 @@ if [ -f "$CLAUDE_MD" ]; then
 else
   inject_tdd_block > "$CLAUDE_MD"
   echo "Created CLAUDE.md with TDD workflow rules"
+fi
+
+echo ""
+read -p "Commit installed files to git? (y/n) " -n 1 -r
+echo ""
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  cd "$TARGET"
+  git add .claude/skills .claude/agents CLAUDE.md
+  git commit -m "update/install tdd-workflow"
+  echo "Committed."
 fi
 
 echo ""

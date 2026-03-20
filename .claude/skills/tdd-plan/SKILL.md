@@ -134,10 +134,19 @@ After writing all task files, present a summary:
 - Highlight the recommended implementation order
 - Note any open questions or decisions deferred
 
+### 7. Offer to Commit
+
+After summarizing, ask the developer if they'd like to commit the new task files. If they confirm:
+- Stage only the `_tasks/*.md` files that were just created (never use `git add -A` or `git add .`)
+- Commit with the message format: `plan: <brief description of what was planned>`
+- Include a bullet list of the created task file names in the commit body
+
+If the developer declines, move on — the files stay uncommitted.
+
 ## Constraints
 
 - **No code** — do not write tests, implementation, or any source code. Only task files in `_tasks/`.
-- **Stop after summarizing** — once you've written task files and presented the summary, you are done. Do not proceed to implementation, do not offer to start coding, do not run `/tdd-next-task` or any other skill.
+- **Stop after committing or declining** — once you've written task files, presented the summary, and handled the commit question, you are done. Do not proceed to implementation, do not offer to start coding, do not run `/tdd-next-task` or any other skill.
 - **Never skip the conversation** — if you asked the developer a question, your next action is to wait for their answer. Do not assume answers, do not proceed with guesses, do not start writing task files while questions are pending. Planning with incomplete information produces weak ACs that cause rework downstream.
 - Every AC must be specific enough to write a test assertion from
 - Keep stories small and vertically sliced

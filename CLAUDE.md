@@ -1,11 +1,12 @@
 # TDD Workflow — Development Guide
 
-This repo contains reusable TDD skills and subagents for Claude Code. It is **not** a runnable project — it gets installed into other projects via `install.sh`.
+This repo contains reusable TDD skills and subagents for Claude Code. It is **not** a runnable project — it gets installed into other projects via `npx @mazzeb/tdd-workflow install`.
 
 ## Project Structure
 
 ```
-install.sh                          # Copies skills/agents into target project + injects CLAUDE.md rules
+package.json                        # npm package manifest (@mazzeb/tdd-workflow)
+bin/cli.js                          # CLI entry point — copies skills/agents into target project
 README.md                           # User-facing documentation
 .claude/
   skills/
@@ -19,6 +20,7 @@ README.md                           # User-facing documentation
     tdd-quick/SKILL.md              # /tdd-quick — plan + Red→Green→Verify for one small change
     tdd-show-tasks/SKILL.md         # /tdd-show-tasks — read-only dashboard
     tdd-archive/SKILL.md            # /tdd-archive — move done tasks to archive
+    tdd-setup-claude-md/SKILL.md    # /tdd-setup-claude-md — add TDD rules to CLAUDE.md
   agents/
     tdd-red/tdd-red.md              # Strict QA Engineer persona
     tdd-green/tdd-green.md          # Pragmatic Developer persona
@@ -29,10 +31,16 @@ README.md                           # User-facing documentation
 
 ```bash
 # Install into a target project
-./install.sh /path/to/target
+npx @mazzeb/tdd-workflow install
 
 # Test install against a scratch directory
-mkdir /tmp/tdd-test && ./install.sh /tmp/tdd-test && ls -R /tmp/tdd-test/.claude
+mkdir /tmp/tdd-test && cd /tmp/tdd-test && node /path/to/tdd-workflow/bin/cli.js install && ls -R .claude
+
+# Check what gets packed
+npm pack --dry-run
+
+# Publish to npm
+npm publish --access public
 ```
 
 ## Conventions
@@ -43,7 +51,7 @@ mkdir /tmp/tdd-test && ./install.sh /tmp/tdd-test && ls -R /tmp/tdd-test/.claude
 - Delegator skills launch agents with prompts separated by `---`
 - All commands use `/tdd-` prefix, lowercase hyphenated
 - Three skill types:
-  - **Self-contained** (`tdd-plan`, `tdd-show-tasks`) — has own Persona, runs directly
+  - **Self-contained** (`tdd-plan`, `tdd-show-tasks`, `tdd-setup-claude-md`) — has own Persona, runs directly
   - **Delegator** (`tdd-red`, `tdd-green`, `tdd-verify`) — launches a subagent, prompt above `---` is for the skill, below `---` is the agent prompt
   - **Orchestrator** (`tdd-next-task`, `tdd-all-tasks`, `tdd-quick`) — coordinates multiple skill/agent invocations in sequence
 
@@ -81,5 +89,5 @@ mkdir /tmp/tdd-test && ./install.sh /tmp/tdd-test && ls -R /tmp/tdd-test/.claude
 - Keep skills and agents self-contained — they must work without this repo being present
 - Agent personas must stay focused: Red doesn't implement, Green doesn't write new tests, Verify doesn't modify code
 - `[REMOVE]` ACs drive test deletion (Red) and code deletion (Green) — Verify confirms absence via Grep
-- Test the install script against a scratch directory before changing copy logic
+- Test the CLI against a scratch directory before changing copy logic
 - The README.md documents the user-facing interface — keep it in sync with any command or workflow changes

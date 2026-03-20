@@ -1,0 +1,38 @@
+{
+  "name": "@mazzeb/tdd-workflow",
+  "version": "1.0.0",
+  "description": "Reusable test-driven development cycle for Claude Code projects",
+  "bin": {
+    "tdd-workflow": "bin/cli.js"
+  },
+  "files": [
+    "bin/cli.js",
+    ".claude/skills/tdd-plan/SKILL.md",
+    ".claude/skills/tdd-plan/template.md",
+    ".claude/skills/tdd-red",
+    ".claude/skills/tdd-green",
+    ".claude/skills/tdd-verify",
+    ".claude/skills/tdd-next-task",
+    ".claude/skills/tdd-all-tasks",
+    ".claude/skills/tdd-quick",
+    ".claude/skills/tdd-show-tasks",
+    ".claude/skills/tdd-archive",
+    ".claude/skills/tdd-setup-claude-md",
+    ".claude/agents/tdd-red",
+    ".claude/agents/tdd-green",
+    ".claude/agents/tdd-verify"
+  ],
+  "keywords": [
+    "claude-code",
+    "tdd",
+    "test-driven-development",
+    "skills",
+    "agents"
+  ],
+  "author": "mazzeb",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mazzeb/tdd-workflow.git"
+  }
+}

@@ -6,13 +6,14 @@ Reusable test-driven development cycle for Claude Code projects, implemented as 
 
 ```bash
 # From your project directory
-/path/to/tdd-workflow/install.sh .
-
-# Or specify a target project
-./install.sh ~/projects/my-app
+npx @mazzeb/tdd-workflow install
 ```
 
-This copies the skills and agents into your project's `.claude/` directory. After copying, the script asks whether to commit the installed files to git. Then configure your `CLAUDE.md` with test commands and file conventions (see [Project Setup](#project-setup)).
+This copies the skills and agents into your project's `.claude/` directory. After installing:
+
+1. Run `/tdd-setup-claude-md` to add TDD workflow rules to your CLAUDE.md
+2. Add test commands and file conventions to your CLAUDE.md (see [Project Setup](#project-setup))
+3. Run `/tdd-plan` to create your first stories
 
 ## Cycle
 
@@ -47,6 +48,7 @@ Verify always runs. On rejection, the task loops back to the appropriate phase u
 | `/tdd-quick <description>` | Plan a single task and immediately run its workflow |
 | `/tdd-show-tasks` | Show a summary table of all tasks with status and progress |
 | `/tdd-archive` | Move completed tasks to `_tasks/_archive/` |
+| `/tdd-setup-claude-md` | Add/update TDD workflow rules in CLAUDE.md |
 
 All commands auto-select the next eligible task if no task number is provided. `/tdd-quick` is a shortcut for small changes — it creates one task file and runs the full cycle in a single invocation. For larger features, use `/tdd-plan` to break the work into multiple stories first.
 
@@ -129,8 +131,10 @@ Configure your project's `CLAUDE.md` with:
 │   │   └── SKILL.md          # Quick single-task orchestrator skill
 │   ├── tdd-show-tasks/
 │   │   └── SKILL.md          # Task summary/dashboard skill
-│   └── tdd-archive/
-│       └── SKILL.md          # Archive completed tasks skill
+│   ├── tdd-archive/
+│   │   └── SKILL.md          # Archive completed tasks skill
+│   └── tdd-setup-claude-md/
+│       └── SKILL.md          # Add/update TDD rules in CLAUDE.md
 └── agents/
     ├── tdd-red/
     │   └── tdd-red.md        # QA Engineer subagent

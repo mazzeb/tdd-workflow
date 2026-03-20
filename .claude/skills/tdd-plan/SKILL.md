@@ -33,25 +33,27 @@ Before discussing anything, build a mental model of the project. What you discov
 - Check `_tasks/` and `_tasks/_archive/` for existing task files to understand numbering and avoid conflicts
 - Look for related code that the new feature will interact with — this informs dependencies and Technical Notes
 
-### 2. Discuss the Feature
+### 2. Interview the Developer
 
-Engage the developer in conversation to nail down scope. Your goal is to reach the point where you could explain every AC to a stranger and they'd know exactly what to test.
+Walk down each branch of the design tree, resolving dependencies between decisions one by one. Your goal is to reach a shared understanding where you could explain every AC to a stranger and they'd know exactly what to test.
 
-- If `$ARGUMENTS` provided a feature description, start by restating your understanding and ask what's missing
-- Clarify scope — what's in, what's explicitly out
-- Surface technical constraints discovered during exploration ("I noticed the auth module uses middleware pattern X — should we follow that?")
-- Identify dependencies between pieces of work
-- Keep asking until you can write ACs with specific inputs, outputs, and edge cases
+- If `$ARGUMENTS` provided a feature description, start by restating your understanding and proposing what you think the scope should be
+- For each design question: **state the question, provide your recommended answer** (based on codebase exploration and architectural judgment), and wait for confirmation or adjustment
+- **Explore before asking** — if a question can be answered by reading the codebase (e.g., "does the auth module use middleware or decorators?"), answer it yourself and state what you found. Only ask the developer when the answer requires human judgment (scope calls, priority tradeoffs, UX preferences)
+- **One branch at a time** — don't dump a wall of questions. Resolve one design area, then move to the next. Group 2-3 tightly related questions only if they can't be answered independently
+- Go deep on edge cases — don't accept "it should handle errors gracefully." Push for specifics: which errors, what response, what gets logged
+- If the developer says "just do whatever makes sense," push back with a concrete proposal and ask them to confirm
 
 **This is a conversation, not a monologue.** After asking questions, **stop and wait for the developer to respond**. Do not answer your own questions. Do not proceed to step 3 while any question is unanswered. The planning phase is only as good as the information it's built on — rushing past unclear scope leads to vague ACs that waste everyone's time in the Red/Green/Verify cycle.
 
 Readiness check before moving on — you should be able to answer **all** of these:
 - What are the concrete inputs and outputs for each behavior?
-- What are the edge cases and error scenarios?
+- What are the edge cases and error scenarios, with specific expected outcomes?
 - What's explicitly out of scope?
-- Which existing code will this interact with?
+- Which existing code will this interact with, and how?
+- What's the dependency order between pieces of work?
 
-If you can't confidently answer all four, you're not done discussing. Ask the developer.
+If you can't confidently answer all five, you're not done interviewing.
 
 ### 3. Break Into Stories
 
@@ -63,7 +65,17 @@ Decompose the feature into small, independently testable stories. Slice **vertic
 - If two stories always need to ship together to be useful, merge them
 - For refactoring: pair `[REMOVE]` stories with their replacement stories, or combine them into a single story when the removal and addition are tightly coupled
 
-### 4. Write Task Files
+### 4. Confirm the Plan
+
+Before writing any task files, present the complete plan as a structured summary:
+
+- List every story you intend to create (title + one-line description)
+- Show the dependency graph
+- Call out any decisions that felt borderline — give the developer one last chance to adjust
+
+**Wait for explicit confirmation** before proceeding to write task files.
+
+### 5. Write Task Files
 
 Create numbered task files in the `_tasks/` directory at the project root:
 - Create the `_tasks/` directory if it doesn't exist
@@ -114,7 +126,7 @@ A single task can mix both formats (e.g., replacing a feature = Given/When/Then 
 - Add **Technical Notes** with implementation hints: relevant file paths, existing functions to extend, API contracts, data structures. Reference specific code discovered during exploration.
 - Add **Notes** for edge cases, constraints, or open questions.
 
-### 5. Summarize
+### 6. Summarize
 
 After writing all task files, present a summary:
 - List all created tasks with their titles and priorities

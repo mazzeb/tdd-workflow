@@ -22,7 +22,13 @@ Moves all `done` tasks from `_tasks/` into `_tasks/_archive/` to keep the active
 - Move each done task file from `_tasks/` to `_tasks/_archive/` using `mv`
 - Preserve the original filename (e.g., `_tasks/003-auth-login.md` → `_tasks/_archive/003-auth-login.md`)
 
-### 3. Report
+### 3. Commit
+
+- Stage all moved files (the deletes from `_tasks/` and additions in `_tasks/_archive/`) using `git add`
+- Create a commit with message: `chore: archive N completed tasks` (where N is the count)
+- Do **not** push
+
+### 4. Report
 
 Show what was archived:
 
@@ -42,8 +48,8 @@ If no done tasks were found, report "No completed tasks to archive."
 - Only move tasks with `status: done` — never move pending, in-progress, or in-review tasks
 - Do not modify any file contents — only move files
 - Do not delete any files
-- Do not push to git — the user can commit the moves separately
+- Do not push to git
 
 ## Tools Available
 
-Read, Glob, Bash (mkdir, mv)
+Read, Glob, Bash (mkdir, mv, git)

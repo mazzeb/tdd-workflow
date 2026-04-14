@@ -25,7 +25,8 @@ Build enough context to write precise ACs — this is the same exploration tdd-p
   - The specific code area the change touches
   - Existing test patterns (runner, assertion style, file naming)
   - Related code that might be affected
-- Check `_tasks/` and `_tasks/_archive/` for existing task files to determine the next number
+- Read `.claude/tdd-config.json` to detect the backend (affects task creation and commits)
+- Use the **Skill tool** to invoke `/tdd-task-list` to see existing tasks and determine numbering
 
 ### 2. Scope Check
 
@@ -39,24 +40,27 @@ If the change would need multiple stories (more than ~5 ACs, touches many unrela
 
 Do not proceed with an oversized task — splitting later is expensive.
 
-### 3. Write the Task File
+### 3. Write the Task
 
-Create a single task file in `_tasks/` using the template from this skill's sibling at `.claude/skills/tdd-plan/template.md`:
+Use the **Skill tool** to invoke `/tdd-task-create` with the task details. This handles backend detection (file-based or Beads) and numbering automatically.
 
-- Number continues from the highest existing task file (or starts at `001`)
-- Filename: `NNN-short-slug.md`
-- Set `status: pending`, `priority: medium` (unless the user specified otherwise), `depends-on: []`
-- Set `type` based on the nature of the change:
+Provide:
+- **title**: short descriptive title
+- **slug**: lowercase hyphenated slug
+- **status**: `pending`
+- **priority**: `medium` (unless the user specified otherwise)
+- **depends-on**: `[]`
+- **type** based on the nature of the change:
   - `feature` — new behavior that needs tests first (default)
   - `bugfix` — reproducing a bug with a test, then fixing
   - `refactor` — restructuring while existing tests stay green
   - `test` — adding/improving test coverage only
   - `chore` — config, deps, CI, docs
-- Write a **Description** with enough context for the Red/Green/Verify agents to work independently
-- Write **Acceptance Criteria** — every AC must be specific enough to derive a test assertion from:
+- **description**: enough context for the Red/Green/Verify agents to work independently
+- **acceptance-criteria**: every AC must be specific enough to derive a test assertion from:
   - `Given/When/Then` format for behavioral ACs (name concrete values, functions, endpoints)
   - `[REMOVE]` prefix for deletion ACs (name the specific functions, classes, files being removed)
-- Add **Technical Notes** with relevant file paths, existing patterns to follow, and implementation hints discovered during exploration
+- **technical-notes**: relevant file paths, existing patterns to follow, and implementation hints discovered during exploration
 
 ### 4. Run the Appropriate Workflow
 
@@ -74,7 +78,7 @@ Execute the cycle exactly as `/tdd-next-task` does — each phase runs sequentia
 
 **Tracking changed files**: Maintain a cumulative list of files changed across all phases. Each agent outputs a `## Changed Files` section at the end of its response — extract those file paths and accumulate them. This list is used at commit time to stage only the files belonging to this task.
 
-**Bridging status**: When a phase is skipped, update the task file's frontmatter to the status the next agent expects (e.g., set `status: in-progress` before Green when Red was skipped; set `status: in-review` before Verify when Green was skipped). Add the task file to the accumulated Changed Files list when bridging.
+**Bridging status**: When a phase is skipped, use the **Skill tool** to invoke `/tdd-task-update <number/ID> --status <value>` to set the status the next agent expects (e.g., `--status in-progress` before Green when Red was skipped; `--status in-review` before Verify when Green was skipped). Add the task file to the accumulated Changed Files list when bridging.
 
 #### 🔴 Red Phase (feature, bugfix, test)
 - Use the **Agent tool** with `agent_path=".claude/agents/tdd-red/tdd-red.md"` and prompt: `"Write failing tests for task NNN in _tasks/. Follow your complete process."`
@@ -105,6 +109,7 @@ Every completed task gets its own git commit for traceability.
 
 - Use `git add` with the **exact file paths from the accumulated Changed Files list** — do not use `git add -A` or `git add .`
 - For files tagged `(deleted)`, use `git add` on them too (git stages deletions)
+- **Beads backend**: Also run `git add .beads/` to include Beads database changes
 - After staging, run `git status` and verify only this task's files are staged. Unstage unexpected files with `git reset HEAD <file>`
 - Commit with message: `feat(TDD-<number>): <task title>`
 - Do NOT push to remote

@@ -25,8 +25,10 @@ function copyDirRecursive(src, dest) {
 function install() {
   const skillsSrc = path.join(PKG_ROOT, '.claude', 'skills');
   const agentsSrc = path.join(PKG_ROOT, '.claude', 'agents');
+  const sharedSrc = path.join(PKG_ROOT, '.claude', 'shared');
   const skillsDest = path.join(DEST, '.claude', 'skills');
   const agentsDest = path.join(DEST, '.claude', 'agents');
+  const sharedDest = path.join(DEST, '.claude', 'shared');
 
   // Warn if overwriting
   if (fs.existsSync(skillsDest) || fs.existsSync(agentsDest)) {
@@ -53,9 +55,15 @@ function install() {
     console.log(`  .claude/agents/${entry.name}/`);
   }
 
+  // Copy shared resources (task-ops.md, etc.)
+  if (fs.existsSync(sharedSrc)) {
+    copyDirRecursive(sharedSrc, sharedDest);
+    console.log('  .claude/shared/');
+  }
+
   console.log('\nDone!\n');
   console.log('Next steps:');
-  console.log('  1. Run /tdd-setup-claude-md to add TDD workflow rules to your CLAUDE.md');
+  console.log('  1. Run /tdd-setup-claude-md to set up task tracking backend and add TDD rules to CLAUDE.md');
   console.log('  2. Add test commands and file conventions to your CLAUDE.md');
   console.log('  3. Run /tdd-plan to create your first stories');
 }

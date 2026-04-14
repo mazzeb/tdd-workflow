@@ -12,24 +12,13 @@ Displays a quick overview of all tasks and their current status.
 
 When the user invokes `/tdd-show-tasks`, follow this process:
 
-### 1. Read All Tasks
+### 1. Get All Tasks
 
-- Use Glob to find all `.md` files directly in `_tasks/` (not subdirectories — exclude `_tasks/_archive/`)
-- If `_tasks/` doesn't exist or has no active `.md` files, report "No tasks found. Run /tdd-plan to create some." and stop
-- Also use Glob to find `.md` files in `_tasks/_archive/` to get the archived count
+Use the **Skill tool** to invoke `/tdd-task-list` — this handles backend detection and returns all active tasks with their metadata, archived count, and next eligible task.
 
-### 2. Parse Each Task
+### 2. Display Summary Table
 
-For each task file, extract:
-- **Number** and **slug** from the filename (e.g., `003-auth-login.md` → `003`, `auth-login`)
-- **Title** from the first `# ` heading
-- **Type** from frontmatter (default `feature` if missing)
-- **Status** from frontmatter (`pending`, `in-progress`, `in-review`, or `done`)
-- **Priority** from frontmatter
-- **Dependencies** from frontmatter `depends-on` list
-### 3. Display Summary Table
-
-Present the tasks as a markdown table sorted by task number:
+Present the tasks as a markdown table sorted by task number/ID:
 
 ```
 | #   | Task                | Type     | Status      | Priority | Deps |
@@ -45,13 +34,13 @@ Use these status indicators:
 - `in-review` — implementation complete, verification pending
 - `done` — verified and complete
 
-### 4. Show Summary Counts
+### 3. Show Summary Counts
 
 Below the table, show:
 - Total active tasks (exclude archived)
 - Count per status (e.g., "2 pending, 1 in-progress, 3 done")
 - Archived task count if any (e.g., "42 archived")
-- Next eligible task: first check for `in-review` (resumable at Verify), then `in-progress` (resumable at Green), then lowest-numbered `pending` task whose dependencies are all `done` or archived. Show "All tasks complete!" if none remain
+- Next eligible task from the task-list output. Show "All tasks complete!" if none remain
 - If there are active `done` tasks, suggest: "Run /tdd-archive to archive completed tasks"
 
 ## Constraints

@@ -12,23 +12,26 @@ You will be given a task number or asked to work on the current `in-progress` ta
 
 ## Process
 
+### 0. Load Task Operations
+
+- Read `.claude/shared/task-ops.md` to understand how to interact with tasks
+- Read `.claude/tdd-config.json` to detect the backend (`files` or `beads`; default `files` if missing)
+- Follow the matching backend's procedures for all task operations below
+
 ### 1. Select Task
 
-- If a task number is provided, read `_tasks/XXX-*.md` for that number
-- If no task number is provided, auto-select:
-  1. Read all `.md` files directly in `_tasks/` (not subdirectories — exclude `_tasks/_archive/`)
-  2. Filter for `status: in-progress`
-  3. Pick the lowest-numbered eligible task
+- If a task number/ID is provided, use the **TASK-READ** operation from task-ops.md for that number/ID
+- If no task number is provided, use the **TASK-FIND-NEXT** operation, filtering for `status: in-progress` tasks only
 - If no eligible task exists, report this and stop
 
 ### 2. Validate and Understand the Task
 
-- Read the task file completely
+- Read the task data completely (via TASK-READ)
 - **Status check**: The task must be `status: in-progress`. If it is `pending`, `in-review`, or `done`, stop and report: "Task XXX is `<status>` — Green phase expects `in-progress`." This prevents running before tests are written or re-running after verification.
 - Read `CLAUDE.md` at the project root for build commands, file conventions, and framework context. If `CLAUDE.md` is missing, fall back to `README.md` and `package.json` for project conventions.
 - Pay special attention to:
   - The acceptance criteria — these define what "done" looks like
-  - The `## Feedback` section if present — this contains rejection notes from a prior Verify pass. Address every point raised.
+  - The Feedback content if present — this contains rejection notes from a prior Verify pass. Address every point raised.
   - Technical Notes for implementation hints, API contracts, file locations
 
 ### 3. Read the Failing Tests
@@ -94,9 +97,9 @@ After tests pass, do a quick cleanup pass:
 
 ### 8. Update Task Status
 
-- Update the task file's frontmatter to exactly: `status: in-review`
-- **Important**: The value must be the literal string `in-review`. Do NOT use phase names like "green" or "done" — the only valid status values are: `pending`, `in-progress`, `in-review`, `done`
-- After writing, re-read the frontmatter to confirm the status is `in-review`
+- Use the **TASK-UPDATE-STATUS** operation from task-ops.md to set status to `in-review`
+- **Important**: The value must be `in-review`. Do NOT use phase names like "green" or "done" — the only valid status values are: `pending`, `in-progress`, `in-review`, `done`
+- After updating, verify the status was set correctly
 - This signals that implementation is complete and the task is ready for verification
 
 ### 9. Report Changed Files
@@ -113,7 +116,7 @@ Use this exact format as the **last section** of your response:
 - _tasks/NNN-slug.md (modified)
 ```
 
-Include every file you touched — source/implementation files and the task file. Use paths relative to the project root. Tag each with `(created)`, `(modified)`, or `(deleted)`.
+Include every file you touched — source/implementation files and the task file (for file backend) or note "beads issue <id> updated" (for beads backend). Use paths relative to the project root. Tag each with `(created)`, `(modified)`, or `(deleted)`.
 
 ## Constraints
 

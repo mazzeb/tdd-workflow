@@ -6,12 +6,14 @@ This repo contains reusable TDD skills and subagents for Claude Code. It is **no
 
 ```
 package.json                        # npm package manifest (@mazzeb/tdd-workflow)
-bin/cli.js                          # CLI entry point — copies skills/agents into target project
+bin/cli.js                          # CLI entry point — copies skills/agents/shared into target project
 README.md                           # User-facing documentation
 .claude/
+  shared/
+    task-ops.md                     # Task operations reference (dual backend: files + beads)
   skills/
     tdd-plan/SKILL.md               # /tdd-plan — self-contained (has own persona)
-    tdd-plan/template.md            # Task file frontmatter + section template
+    tdd-plan/template.md            # Task file frontmatter + section template (file backend)
     tdd-red/SKILL.md                # /tdd-red — delegator → tdd-red agent
     tdd-green/SKILL.md              # /tdd-green — delegator → tdd-green agent
     tdd-verify/SKILL.md             # /tdd-verify — delegator → tdd-verify agent
@@ -20,7 +22,11 @@ README.md                           # User-facing documentation
     tdd-quick/SKILL.md              # /tdd-quick — plan + Red→Green→Verify for one small change
     tdd-show-tasks/SKILL.md         # /tdd-show-tasks — read-only dashboard
     tdd-archive/SKILL.md            # /tdd-archive — move done tasks to archive
-    tdd-setup-claude-md/SKILL.md    # /tdd-setup-claude-md — add TDD rules to CLAUDE.md
+    tdd-setup-claude-md/SKILL.md    # /tdd-setup-claude-md — backend choice + TDD rules to CLAUDE.md
+    tdd-task-list/SKILL.md          # /tdd-task-list — utility: list/filter/find-next task
+    tdd-task-create/SKILL.md        # /tdd-task-create — utility: create task
+    tdd-task-update/SKILL.md        # /tdd-task-update — utility: update status/feedback/ACs
+    tdd-task-archive/SKILL.md       # /tdd-task-archive — utility: archive completed tasks
   agents/
     tdd-red/tdd-red.md              # Strict QA Engineer persona
     tdd-green/tdd-green.md          # Pragmatic Developer persona
@@ -39,7 +45,10 @@ mkdir /tmp/tdd-test && cd /tmp/tdd-test && node /path/to/tdd-workflow/bin/cli.js
 # Check what gets packed
 npm pack --dry-run
 
-# Publish to npm
+# Publish to npm (bump version in package.json first, then tag)
+npm version <major|minor|patch>   # or edit package.json manually
+git tag v<version>
+git push && git push --tags
 npm publish --access public
 ```
 
@@ -50,10 +59,11 @@ npm publish --access public
 - Sections: Persona (if self-contained), Usage, Instructions, Subagent (if delegating), Constraints, Tools Available, Error Handling
 - Delegator skills launch agents with prompts separated by `---`
 - All commands use `/tdd-` prefix, lowercase hyphenated
-- Three skill types:
+- Four skill types:
   - **Self-contained** (`tdd-plan`, `tdd-show-tasks`, `tdd-setup-claude-md`) — has own Persona, runs directly
   - **Delegator** (`tdd-red`, `tdd-green`, `tdd-verify`) — launches a subagent, prompt above `---` is for the skill, below `---` is the agent prompt
   - **Orchestrator** (`tdd-next-task`, `tdd-all-tasks`, `tdd-quick`) — coordinates multiple skill/agent invocations in sequence
+  - **Utility** (`tdd-task-list`, `tdd-task-create`, `tdd-task-update`, `tdd-task-archive`) — backend-aware task operations, called by other skills via Skill tool
 
 ### Agents (tdd-*.md)
 - Title: `# TDD Phase Agent — Persona Name`
@@ -61,12 +71,26 @@ npm publish --access public
 - Strict tool segregation: Red = test files only, Green = source files only, Verify = read-only review
 - Each agent has a distinct persona and mindset
 
-### Task Files (_tasks/)
+### Task Tracking Backends
+Two backends are supported, chosen during `/tdd-setup-claude-md`:
+- **File-based** (default): Tasks are markdown files in `_tasks/` with YAML frontmatter. Config: `.claude/tdd-config.json` → `{"backend": "files"}`
+- **Beads**: Tasks are issues managed by the `bd` CLI. Config: `.claude/tdd-config.json` → `{"backend": "beads"}`
+
+All task operations go through utility skills (`/tdd-task-*`) or the shared `task-ops.md` reference (for agents), which handle backend differences transparently.
+
+### Task Files (_tasks/) — File Backend
 - Naming: `NNN-slug-description.md` (three-digit zero-padded)
 - Frontmatter: `status` (pending/in-progress/in-review/done), `type` (feature/bugfix/refactor/test/chore), `priority`, `depends-on`
 - AC formats: `Given/when/then` for behavior, `[REMOVE]` prefix for removal — both with checkboxes
 - Feedback section: added on Verify rejection, cleared on done
 - **Archive**: `_tasks/_archive/` holds completed tasks moved by `/tdd-archive`. Being in the archive directory signals `done` status — skills check archived filenames for dependency resolution without reading file contents. New task numbering checks both directories to avoid conflicts.
+
+### Beads Issues — Beads Backend
+- Issues created via `bd create`, tracked by hash IDs (e.g., `bd-a1b2`)
+- Status mapping: `open` → pending, `in_progress` → in-progress, `in_progress` + `in-review` label → in-review, `closed` → done
+- ACs stored in the `acceptance` field, feedback via `bd comment add`
+- Dependencies managed via `bd dep add`
+- Archiving is automatic — closing an issue removes it from active lists
 
 ### Task Types & Workflows
 - `feature` / `bugfix`: Red → Green → Verify (full TDD cycle)

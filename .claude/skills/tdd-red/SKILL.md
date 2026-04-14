@@ -17,10 +17,10 @@ When the user invokes `/tdd-red`, delegate the work to the `tdd-red` subagent:
 2. Use the **Agent tool** with `agent_path=".claude/agents/tdd-red/tdd-red.md"` and the following prompt:
 
 **If task number provided:**
-> Read the task file for task $TASK_NUMBER in the `_tasks/` directory. Write failing tests for all its acceptance criteria. Follow your complete process.
+> Write failing tests for task $TASK_NUMBER. Follow your complete process.
 
 **If no task number:**
-> Auto-select the next eligible pending task from `_tasks/`. Write failing tests for all its acceptance criteria. Follow your complete process.
+> Auto-select the next eligible pending task. Write failing tests for all its acceptance criteria. Follow your complete process.
 
 3. Report the subagent's results back to the user:
    - Which task was selected

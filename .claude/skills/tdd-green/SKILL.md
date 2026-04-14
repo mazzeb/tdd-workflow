@@ -17,10 +17,10 @@ When the user invokes `/tdd-green`, delegate the work to the `tdd-green` subagen
 2. Use the **Agent tool** with `agent_path=".claude/agents/tdd-green/tdd-green.md"` and the following prompt:
 
 **If task number provided:**
-> Read the task file for task $TASK_NUMBER in the `_tasks/` directory. Write the minimum implementation to make all failing tests pass. Follow your complete process.
+> Write the minimum implementation for task $TASK_NUMBER to make all failing tests pass. Follow your complete process.
 
 **If no task number:**
-> Auto-select the current in-progress task from `_tasks/`. Write the minimum implementation to make all failing tests pass. Follow your complete process.
+> Auto-select the current in-progress task. Write the minimum implementation to make all failing tests pass. Follow your complete process.
 
 3. Report the subagent's results back to the user:
    - Which task was worked on

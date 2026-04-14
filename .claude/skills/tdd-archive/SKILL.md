@@ -10,46 +10,28 @@ Moves all `done` tasks from `_tasks/` into `_tasks/_archive/` to keep the active
 
 ## Instructions
 
-### 1. Find Done Tasks
+### 1. Archive Tasks
 
-- Use Glob to find all `.md` files in `_tasks/` (not subdirectories — exclude `_tasks/_archive/`)
-- Read each file and check the frontmatter for `status: done`
-- Collect the list of done task files
+Use the **Skill tool** to invoke `/tdd-task-archive` — this handles backend detection and performs the archive operation.
 
-### 2. Move to Archive
+### 2. Commit (file backend only)
 
-- Create `_tasks/_archive/` if it doesn't exist (use `mkdir -p`)
-- Move each done task file from `_tasks/` to `_tasks/_archive/` using `mv`
-- Preserve the original filename (e.g., `_tasks/003-auth-login.md` → `_tasks/_archive/003-auth-login.md`)
-
-### 3. Commit
-
+If the archive skill reports that tasks were moved (file backend):
 - Stage all moved files (the deletes from `_tasks/` and additions in `_tasks/_archive/`) using `git add`
 - Create a commit with message: `chore: archive N completed tasks` (where N is the count)
 - Do **not** push
 
-### 4. Report
+If the archive skill reports no action needed (beads backend), skip the commit.
 
-Show what was archived:
+### 3. Report
 
-```
-Archived N tasks:
-  003 — Auth login
-  005 — Session management
-  ...
-
-Remaining active tasks: M
-```
-
-If no done tasks were found, report "No completed tasks to archive."
+Relay the archive skill's output to the user. If no done tasks were found, report "No completed tasks to archive."
 
 ## Constraints
 
-- Only move tasks with `status: done` — never move pending, in-progress, or in-review tasks
-- Do not modify any file contents — only move files
-- Do not delete any files
+- Do not modify any file contents — only move files (file backend)
 - Do not push to git
 
 ## Tools Available
 
-Read, Glob, Bash (mkdir, mv, git)
+Bash (git), Skill tool

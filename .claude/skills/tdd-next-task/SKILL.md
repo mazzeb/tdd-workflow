@@ -28,13 +28,15 @@ When the user invokes `/tdd-next-task`, orchestrate the appropriate TDD cycle:
 
 ### 1. Find the Next Eligible Task
 
-Read all `.md` files directly in `_tasks/` (not subdirectories — exclude `_tasks/_archive/`) and check for resumable or eligible tasks in this priority order:
+Use the **Skill tool** to invoke `/tdd-task-list next` — this handles backend detection (file-based or Beads) and returns the next eligible task in priority order:
 
-1. **`in-review`** — implementation complete, pick the lowest-numbered match → resume at Verify phase
-2. **`in-progress`** — tests written, pick the lowest-numbered match → resume at Green phase
-3. **`pending`** — not yet started, exclude tasks whose `depends-on` references any task that is not `status: done` **or archived** (tasks in `_tasks/_archive/` are implicitly done — use Glob on `_tasks/_archive/` to get archived task numbers from filenames, no need to read them), pick the lowest-numbered eligible match → start full Red → Green → Verify cycle
+1. **`in-review`** → resume at Verify phase
+2. **`in-progress`** → resume at Green phase
+3. **`pending`** with met dependencies → start full cycle
 
-If no task matches any of these, report "No eligible tasks found" and stop.
+If no task is eligible, report "No eligible tasks found" and stop.
+
+Also read `.claude/tdd-config.json` to detect the backend — this affects commit behavior (step 5).
 
 ### 2. Report Selection
 
@@ -63,9 +65,9 @@ Each phase must fully complete before launching the next — they are sequential
 
 **Tracking changed files**: Maintain a cumulative list of files changed across all phases. Each agent outputs a `## Changed Files` section at the end of its response — extract those file paths and accumulate them. This list is used at commit time to stage only the files belonging to this task, which is critical for parallel task execution where multiple tasks may have uncommitted changes simultaneously.
 
-**Bridging status before a phase**: Agents validate their expected status on entry. When a phase is skipped, the orchestrator must update the task file's frontmatter to the status the next agent expects:
-- Before Green (when Red was skipped): set `status: in-progress`
-- Before Verify (when Green was skipped): set `status: in-review`
+**Bridging status before a phase**: Agents validate their expected status on entry. When a phase is skipped, the orchestrator must update the task's status to what the next agent expects. Use the **Skill tool** to invoke `/tdd-task-update <number/ID> --status <value>`:
+- Before Green (when Red was skipped): `/tdd-task-update <number/ID> --status in-progress`
+- Before Verify (when Green was skipped): `/tdd-task-update <number/ID> --status in-review`
 - Add the task file to the accumulated Changed Files list when bridging
 
 #### 🔴 Red Phase (feature, bugfix, test)
@@ -114,6 +116,7 @@ Every completed task gets its own git commit. This is essential for traceability
 
 - Use `git add` with the **exact file paths from the accumulated Changed Files list** — do not use `git add -A` or `git add .`
 - For files tagged `(deleted)` in the list, use `git add` on them too (git stages deletions this way)
+- **Beads backend**: Also run `git add .beads/` to include Beads database changes alongside code changes
 - After staging, run `git status` and verify that **only** the task's files are staged. If unexpected files appear in the staged area, unstage them with `git reset HEAD <file>` before committing
 - Create a commit with message: `feat(TDD-<number>): <task title>`
 - Do NOT push to remote

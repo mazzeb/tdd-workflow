@@ -30,7 +30,7 @@ Before discussing anything, build a mental model of the project. What you discov
   - **Existing patterns** — how similar features are structured (routes, handlers, models, etc.)
   - **Test conventions** — test runner, assertion style, fixture patterns, how tests are organized
   - **API surface** — existing endpoints, data models, or interfaces the new work might touch
-- Check `_tasks/` and `_tasks/_archive/` for existing task files to understand numbering and avoid conflicts
+- Use the **Skill tool** to invoke `/tdd-task-list` to see existing tasks (handles both file and beads backends) and understand numbering/avoid conflicts
 - Look for related code that the new feature will interact with — this informs dependencies and Technical Notes
 
 ### 2. Interview the Developer
@@ -77,15 +77,13 @@ Before writing any task files, present the complete plan as a structured summary
 
 ### 5. Write Task Files
 
-Create numbered task files in the `_tasks/` directory at the project root:
-- Create the `_tasks/` directory if it doesn't exist
-- Name files as `001-short-slug.md`, `002-another-slug.md`, etc.
-- Continue numbering from the highest existing task file (check both `_tasks/` and `_tasks/_archive/`)
-- Use the template in this skill's `template.md`
+For each story, use the **Skill tool** to invoke `/tdd-task-create` with the task details. This handles backend detection (file-based `_tasks/` or Beads `bd` CLI) and numbering automatically.
 
-For each task file:
-- Set `status: pending`
-- Set `type` based on the nature of the work — this determines which workflow phases run:
+Provide these details for each task:
+- **title**: short descriptive title
+- **slug**: lowercase hyphenated slug for filename (file backend)
+- **status**: `pending`
+- **type**: based on the nature of the work — this determines which workflow phases run:
 
 | Type | Workflow | When to use |
 |------|----------|-------------|
@@ -97,10 +95,10 @@ For each task file:
 
   Default to `feature` when in doubt. Use `refactor` only when existing tests already cover the desired behavior and the task is about restructuring. Use `chore` for changes where writing tests wouldn't add value (CI config, dependency updates, documentation).
 
-- Set `priority` based on discussion with the developer
-- Set `depends-on` to reference task numbers this story requires (e.g., `[1]` or `[1, 3]`)
-- Write a clear **Description** explaining what and why — include enough context that someone unfamiliar with the conversation could understand the intent
-- Write **Acceptance Criteria** where every AC is concrete enough to derive a test assertion from
+- **priority**: based on discussion with the developer
+- **depends-on**: task numbers/IDs this story requires
+- **description**: clear explanation of what and why — enough context for someone unfamiliar with the conversation
+- **acceptance-criteria**: every AC must be concrete enough to derive a test assertion from
 
 **AC format — Given/When/Then:**
 ```
@@ -123,8 +121,8 @@ Be specific — name the functions, classes, endpoints, files, or modules being 
 
 A single task can mix both formats (e.g., replacing a feature = Given/When/Then ACs for the new behavior + `[REMOVE]` ACs for the old).
 
-- Add **Technical Notes** with implementation hints: relevant file paths, existing functions to extend, API contracts, data structures. Reference specific code discovered during exploration.
-- Add **Notes** for edge cases, constraints, or open questions.
+- **technical-notes**: implementation hints — relevant file paths, existing functions to extend, API contracts, data structures. Reference specific code discovered during exploration.
+- **notes**: edge cases, constraints, or open questions.
 
 ### 6. Summarize
 
@@ -137,9 +135,10 @@ After writing all task files, present a summary:
 ### 7. Offer to Commit
 
 After summarizing, ask the developer if they'd like to commit the new task files. If they confirm:
-- Stage only the `_tasks/*.md` files that were just created (never use `git add -A` or `git add .`)
+- **File backend**: Stage only the `_tasks/*.md` files that were just created (never use `git add -A` or `git add .`)
+- **Beads backend**: Stage the `.beads/` directory changes (`git add .beads/`)
 - Commit with the message format: `plan: <brief description of what was planned>`
-- Include a bullet list of the created task file names in the commit body
+- Include a bullet list of the created task file names/IDs in the commit body
 
 If the developer declines, move on — the files stay uncommitted.
 

@@ -12,18 +12,21 @@ You will be given a task number or asked to verify the current `in-review` task.
 
 ## Process
 
+### 0. Load Task Operations
+
+- Read `.claude/shared/task-ops.md` to understand how to interact with tasks
+- Read `.claude/tdd-config.json` to detect the backend (`files` or `beads`; default `files` if missing)
+- Follow the matching backend's procedures for all task operations below
+
 ### 1. Select Task
 
-- If a task number is provided, read `_tasks/XXX-*.md` for that number
-- If no task number is provided, auto-select:
-  1. Read all `.md` files directly in `_tasks/` (not subdirectories — exclude `_tasks/_archive/`)
-  2. Filter for `status: in-review`
-  3. Pick the lowest-numbered eligible task
+- If a task number/ID is provided, use the **TASK-READ** operation from task-ops.md for that number/ID
+- If no task number is provided, use the **TASK-FIND-NEXT** operation, filtering for `status: in-review` tasks only
 - If no eligible task exists, report this and stop
 
-### 2. Validate and Read the Task File
+### 2. Validate and Read the Task
 
-- Read the complete task file
+- Read the task data completely (via TASK-READ)
 - **Status check**: The task must be `status: in-review`. If it is `pending`, `in-progress`, or `done`, stop and report: "Task XXX is `<status>` — Verify phase expects `in-review`." This prevents reviewing before implementation is complete.
 - Extract all acceptance criteria — these are your review checklist
 - Note the Description and Technical Notes for context
@@ -76,37 +79,37 @@ Collect findings:
 ### 6. Make Decision
 
 #### If ALL checks pass:
-1. Update the task file:
-   - Set `status: done` in frontmatter
-   - Check off all AC checkboxes (`- [x]`)
-   - Remove the `## Feedback` section entirely if it exists
+1. Update the task using task-ops.md operations:
+   - Use **TASK-UPDATE-STATUS** to set status to `done`
+   - Use **TASK-UPDATE-ACS** to check off all AC checkboxes (`- [x]`)
+   - Use **TASK-UPDATE-FEEDBACK** (clear) to remove Feedback if it exists
 2. Report: "Task XXX verified and marked as done"
 
 #### If test issues found (Red rejection):
-1. Write a `## Feedback` section in the task file. **Replace any existing `## Feedback` section entirely** — do not append to old feedback:
-   ```markdown
+1. Use **TASK-UPDATE-FEEDBACK** (write) with the feedback content. **Replace any existing feedback entirely** — do not append to old feedback:
+   ```
    ## Feedback
    ### Red — YYYY-MM-DD
    - AC #N: [specific issue with the test]
    - AC #M: [specific issue or missing test]
    ```
-2. Set `status: pending` in frontmatter (so Red agent will pick it up)
+2. Use **TASK-UPDATE-STATUS** to set status to `pending` (so Red agent will pick it up)
 3. Report: "Task XXX rejected — test issues found" with summary
 
 #### If implementation issues found (Green rejection):
-1. Write a `## Feedback` section in the task file. **Replace any existing `## Feedback` section entirely**:
-   ```markdown
+1. Use **TASK-UPDATE-FEEDBACK** (write) with the feedback content. **Replace any existing feedback entirely**:
+   ```
    ## Feedback
    ### Green — YYYY-MM-DD
    - [specific issue with implementation]
    - [over-engineering or scope concern]
    ```
-2. Keep `status: in-progress` in frontmatter (so Green agent will pick it up)
+2. Use **TASK-UPDATE-STATUS** to set status to `in-progress` (so Green agent will pick it up)
 3. Report: "Task XXX rejected — implementation issues found" with summary
 
 #### If both test AND implementation issues found:
-1. Write feedback for both in the `## Feedback` section:
-   ```markdown
+1. Use **TASK-UPDATE-FEEDBACK** (write) with feedback for both:
+   ```
    ## Feedback
    ### Red — YYYY-MM-DD
    - AC #N: [test issue]
@@ -114,7 +117,7 @@ Collect findings:
    ### Green — YYYY-MM-DD
    - [implementation issue]
    ```
-2. Set `status: pending` in frontmatter (Red goes first, then Green)
+2. Use **TASK-UPDATE-STATUS** to set status to `pending` (Red goes first, then Green)
 3. Report: "Task XXX rejected — both test and implementation issues found"
 
 ### 7. Report Changed Files
@@ -128,7 +131,7 @@ Use this exact format as the **last section** of your response:
 - _tasks/NNN-slug.md (modified)
 ```
 
-Verify only touches the task file, so this will typically be a single entry. Include it anyway — the orchestrator depends on this consistent format.
+For beads backend, note "beads issue <id> updated" instead. Verify only touches the task data, so this will typically be a single entry. Include it anyway — the orchestrator depends on this consistent format.
 
 ## Constraints
 

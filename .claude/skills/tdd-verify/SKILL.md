@@ -17,10 +17,10 @@ When the user invokes `/tdd-verify`, delegate the work to the `tdd-verify` subag
 2. Use the **Agent tool** with `agent_path=".claude/agents/tdd-verify/tdd-verify.md"` and the following prompt:
 
 **If task number provided:**
-> Review task $TASK_NUMBER from the `_tasks/` directory. Verify that tests and implementation correctly fulfill all acceptance criteria. Follow your complete process.
+> Verify task $TASK_NUMBER. Check that tests and implementation correctly fulfill all acceptance criteria. Follow your complete process.
 
 **If no task number:**
-> Auto-select the current in-review task from `_tasks/`. Verify that tests and implementation correctly fulfill all acceptance criteria. Follow your complete process.
+> Auto-select the current in-review task. Verify that tests and implementation correctly fulfill all acceptance criteria. Follow your complete process.
 
 3. Report the subagent's results back to the user:
    - Which task was reviewed

@@ -79,7 +79,7 @@ Map status to Beads operations:
 #### Beads backend
 1. `bd show <id> --json` — extract the `acceptance` field
 2. Replace all `- [ ]` with `- [x]` in the text
-3. Pipe updated text: `echo '<updated>' | bd update <id> --acceptance=-`
+3. Update: `bd update <id> --acceptance "$(cat <<'EOF'` ... updated text ... `EOF` `)"`
 
 ### 6. Report
 

@@ -133,11 +133,11 @@ Read `.claude/tdd-config.json` in the project root. If it contains `"backend": "
 2. **Preserve the slug** for human readability: `bd label add <id> slug:<slug>`
    - Example: `bd label add bd-a1b2 slug:auth-login`
    - This allows humans and tools to identify tasks by meaningful names alongside opaque Beads IDs
-3. Update fields (use stdin to safely handle special characters):
-   - `echo '<description>' | bd update <id> --description=-`
-   - `echo '<ACs as - [ ] lines>' | bd update <id> --acceptance=-`
-   - `echo '<technical notes>' | bd update <id> --design=-`
-   - `echo '<additional notes>' | bd update <id> --notes=-`
+3. Update fields (use heredocs for multiline content with special characters):
+   - Description: `bd update <id> --body-file - <<'EOF'` ... `EOF`
+   - Design notes: `bd update <id> --design-file - <<'EOF'` ... `EOF`
+   - ACs (no stdin flag — pass as string): `bd update <id> --acceptance "$(cat <<'EOF'` ... `EOF` `)"`
+   - Notes (no stdin flag — pass as string): `bd update <id> --notes "$(cat <<'EOF'` ... `EOF` `)"`
 4. Set dependencies: `bd dep add <new-id> <dep-id>` for each dependency
    - Note: `bd dep add A B` means "A depends on B"
 5. Return the created issue ID and slug label
@@ -183,7 +183,7 @@ Status mapping:
 ### Beads backend
 1. Read current acceptance text: `bd show <id> --json` → parse `acceptance` field
 2. Replace `- [ ]` with `- [x]` in the text
-3. Update: pipe the updated text via `echo '<updated>' | bd update <id> --acceptance=-`
+3. Update: `bd update <id> --acceptance "$(cat <<'EOF'` ... updated text ... `EOF` `)"`
 
 ---
 

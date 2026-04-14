@@ -81,12 +81,29 @@ After the backend is initialized, check if there are existing tasks in the **oth
       Type mapping: `feature` → `feature`, `bugfix` → `bug`, `refactor` → `task`, `test` → `task`, `chore` → `task`
       Priority mapping: `high` → `1`, `medium` → `2`, `low` → `3`
    b. Add type labels for non-direct mappings (`refactor`, `test-only`, `chore`)
-   c. Set fields via stdin (to handle special characters safely):
-      ```
-      echo '<description>' | bd update <id> --description=-
-      echo '<ACs>' | bd update <id> --acceptance=-
-      echo '<technical-notes>' | bd update <id> --design=-
-      echo '<notes>' | bd update <id> --notes=-
+   c. Set fields (use heredocs for multiline content with special characters):
+      ```bash
+      # Description (supports stdin via --body-file -)
+      bd update <id> --body-file - <<'EOF'
+      <description>
+      EOF
+
+      # Design/technical notes (supports stdin via --design-file -)
+      bd update <id> --design-file - <<'EOF'
+      <technical-notes>
+      EOF
+
+      # Acceptance criteria (no stdin flag — pass as string argument)
+      bd update <id> --acceptance "$(cat <<'EOF'
+      <ACs>
+      EOF
+      )"
+
+      # Notes (no stdin flag — pass as string argument)
+      bd update <id> --notes "$(cat <<'EOF'
+      <notes>
+      EOF
+      )"
       ```
    d. Set dependencies using a mapping of old task numbers → new Beads IDs (built as you go):
       ```

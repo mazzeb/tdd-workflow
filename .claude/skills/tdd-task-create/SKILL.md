@@ -83,12 +83,29 @@ Use the template from `.claude/skills/tdd-plan/template.md` as reference for str
    ```
    Example: `bd label add bd-a1b2 slug:auth-login`
 
-4. Set fields (use stdin for content with special characters):
-   ```
-   echo '<description>' | bd update <id> --description=-
-   echo '<ACs>' | bd update <id> --acceptance=-
-   echo '<technical-notes>' | bd update <id> --design=-
-   echo '<notes>' | bd update <id> --notes=-
+4. Set fields (use heredocs for multiline content with special characters):
+   ```bash
+   # Description (supports stdin via --body-file -)
+   bd update <id> --body-file - <<'EOF'
+   <description>
+   EOF
+
+   # Design/technical notes (supports stdin via --design-file -)
+   bd update <id> --design-file - <<'EOF'
+   <technical-notes>
+   EOF
+
+   # Acceptance criteria (no stdin flag — pass as string argument)
+   bd update <id> --acceptance "$(cat <<'EOF'
+   <ACs>
+   EOF
+   )"
+
+   # Notes (no stdin flag — pass as string argument)
+   bd update <id> --notes "$(cat <<'EOF'
+   <notes>
+   EOF
+   )"
    ```
 
 5. Set dependencies:

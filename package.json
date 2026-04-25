@@ -1,6 +1,6 @@
 {
   "name": "@mazzeb/tdd-workflow",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Reusable test-driven development cycle for Claude Code projects",
   "bin": {
     "tdd-workflow": "bin/cli.js"
@@ -23,9 +23,9 @@
     ".claude/skills/tdd-task-create",
     ".claude/skills/tdd-task-update",
     ".claude/skills/tdd-task-archive",
-    ".claude/agents/tdd-red",
-    ".claude/agents/tdd-green",
-    ".claude/agents/tdd-verify"
+    ".claude/agents/tdd-red.md",
+    ".claude/agents/tdd-green.md",
+    ".claude/agents/tdd-verify.md"
   ],
   "keywords": [
     "claude-code",

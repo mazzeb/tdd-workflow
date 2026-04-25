@@ -81,19 +81,19 @@ Execute the cycle exactly as `/tdd-next-task` does — each phase runs sequentia
 **Bridging status**: When a phase is skipped, use the **Skill tool** to invoke `/tdd-task-update <number/ID> --status <value>` to set the status the next agent expects (e.g., `--status in-progress` before Green when Red was skipped; `--status in-review` before Verify when Green was skipped). Add the task file to the accumulated Changed Files list when bridging.
 
 #### 🔴 Red Phase (feature, bugfix, test)
-- Use the **Agent tool** with `agent_path=".claude/agents/tdd-red/tdd-red.md"` and prompt: `"Write failing tests for task NNN in _tasks/. Follow your complete process."`
+- Use the **Agent tool** with `subagent_type="tdd-red"` and prompt: `"Write failing tests for task NNN in _tasks/. Follow your complete process."`
 - If tests pass unexpectedly, stop and report to the user
 - **Extract the `## Changed Files` list** from the agent's response and start the accumulated file list
 
 #### 🟢 Green Phase (feature, bugfix, refactor, chore)
 - **If Red was skipped**: update the task file's frontmatter to `status: in-progress` before launching
-- Use the **Agent tool** with `agent_path=".claude/agents/tdd-green/tdd-green.md"` and prompt: `"Write minimum implementation for task NNN in _tasks/. Follow your complete process."`
+- Use the **Agent tool** with `subagent_type="tdd-green"` and prompt: `"Write minimum implementation for task NNN in _tasks/. Follow your complete process."`
 - If tests can't pass, stop and report to the user
 - **Extract the `## Changed Files` list** and merge into the accumulated file list (deduplicate)
 
 #### 🔍 Verify Phase (all types)
 - **If Green was skipped**: update the task file's frontmatter to `status: in-review` before launching
-- Use the **Agent tool** with `agent_path=".claude/agents/tdd-verify/tdd-verify.md"` and prompt: `"Verify task NNN from _tasks/. Check tests and implementation against all ACs. Follow your complete process."`
+- Use the **Agent tool** with `subagent_type="tdd-verify"` and prompt: `"Verify task NNN from _tasks/. Check tests and implementation against all ACs. Follow your complete process."`
 - **Extract the `## Changed Files` list** and merge into the accumulated file list
 - If Verify **passes**: cycle complete
 - If Verify **rejects**: route back based on task type:
@@ -127,7 +127,7 @@ After committing:
 - **Single task only** — refuse multi-story requests, direct to `/tdd-plan`
 - **No skipping phases** — every task runs its full workflow for its type (never skip Verify)
 - **Sequential phases** — each phase must complete before the next starts
-- **Agent tool only** — use `agent_path` to launch Red/Green/Verify, do not inline their logic
+- **Agent tool only** — use `subagent_type` to launch Red/Green/Verify, do not inline their logic
 - **Mandatory commit** — always commit on success, never push
 
 ## Error Handling

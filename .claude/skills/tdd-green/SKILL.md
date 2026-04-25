@@ -14,7 +14,7 @@ Delegates to the `tdd-green` subagent (Pragmatic Developer persona).
 When the user invokes `/tdd-green`, delegate the work to the `tdd-green` subagent:
 
 1. Parse the optional task number argument from `$ARGUMENTS`
-2. Use the **Agent tool** with `agent_path=".claude/agents/tdd-green/tdd-green.md"` and the following prompt:
+2. Use the **Agent tool** with `subagent_type="tdd-green"` and the following prompt:
 
 **If task number provided:**
 > Write the minimum implementation for task $TASK_NUMBER to make all failing tests pass. Follow your complete process.
@@ -31,5 +31,5 @@ When the user invokes `/tdd-green`, delegate the work to the `tdd-green` subagen
 
 ## Subagent
 
-- **Agent:** `tdd-green` (`.claude/agents/tdd-green/tdd-green.md`)
+- **Agent:** `tdd-green` (`.claude/agents/tdd-green.md`)
 - **Persona:** Pragmatic Developer

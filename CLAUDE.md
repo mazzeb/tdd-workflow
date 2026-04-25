@@ -28,9 +28,9 @@ README.md                           # User-facing documentation
     tdd-task-update/SKILL.md        # /tdd-task-update — utility: update status/feedback/ACs
     tdd-task-archive/SKILL.md       # /tdd-task-archive — utility: archive completed tasks
   agents/
-    tdd-red/tdd-red.md              # Strict QA Engineer persona
-    tdd-green/tdd-green.md          # Pragmatic Developer persona
-    tdd-verify/tdd-verify.md        # Senior Code Reviewer persona
+    tdd-red.md                      # Strict QA Engineer persona (YAML frontmatter required)
+    tdd-green.md                    # Pragmatic Developer persona (YAML frontmatter required)
+    tdd-verify.md                   # Senior Code Reviewer persona (YAML frontmatter required)
 ```
 
 ## Commands
@@ -66,10 +66,13 @@ npm publish --access public
   - **Utility** (`tdd-task-list`, `tdd-task-create`, `tdd-task-update`, `tdd-task-archive`) — backend-aware task operations, called by other skills via Skill tool
 
 ### Agents (tdd-*.md)
+- **Layout**: flat files at `.claude/agents/<name>.md` (NOT in subdirectories — Claude Code only discovers top-level agent files)
+- **YAML frontmatter is required** — without it, Claude Code will not register the agent. Required fields: `name` (lowercase-hyphenated, must match filename), `description` (when to delegate). Optional: `tools` (comma-separated), `model`.
 - Title: `# TDD Phase Agent — Persona Name`
 - Sections: Persona, Task, Process (numbered steps), Constraints, Tools Available
 - Strict tool segregation: Red = test files only, Green = source files only, Verify = read-only review
 - Each agent has a distinct persona and mindset
+- Skills invoke agents with the Agent tool's `subagent_type="<name>"` parameter (NOT `agent_path`)
 
 ### Task Tracking Backends
 Two backends are supported, chosen during `/tdd-setup-claude-md`:

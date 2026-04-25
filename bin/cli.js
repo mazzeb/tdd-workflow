@@ -46,13 +46,14 @@ function install() {
     console.log(`  .claude/skills/${entry.name}/`);
   }
 
-  // Copy agents
+  // Copy agents (flat .md files — Claude Code requires top-level files in .claude/agents/)
+  fs.mkdirSync(agentsDest, { recursive: true });
   for (const entry of fs.readdirSync(agentsSrc, { withFileTypes: true })) {
-    if (!entry.isDirectory()) continue;
+    if (!entry.isFile() || !entry.name.endsWith('.md')) continue;
     const src = path.join(agentsSrc, entry.name);
     const dest = path.join(agentsDest, entry.name);
-    copyDirRecursive(src, dest);
-    console.log(`  .claude/agents/${entry.name}/`);
+    fs.copyFileSync(src, dest);
+    console.log(`  .claude/agents/${entry.name}`);
   }
 
   // Copy shared resources (task-ops.md, etc.)

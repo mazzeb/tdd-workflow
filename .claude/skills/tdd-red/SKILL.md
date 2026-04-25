@@ -14,7 +14,7 @@ Delegates to the `tdd-red` subagent (Strict QA Engineer persona).
 When the user invokes `/tdd-red`, delegate the work to the `tdd-red` subagent:
 
 1. Parse the optional task number argument from `$ARGUMENTS`
-2. Use the **Agent tool** with `agent_path=".claude/agents/tdd-red/tdd-red.md"` and the following prompt:
+2. Use the **Agent tool** with `subagent_type="tdd-red"` and the following prompt:
 
 **If task number provided:**
 > Write failing tests for task $TASK_NUMBER. Follow your complete process.
@@ -31,6 +31,6 @@ When the user invokes `/tdd-red`, delegate the work to the `tdd-red` subagent:
 
 ## Subagent
 
-- **Agent:** `tdd-red` (`.claude/agents/tdd-red/tdd-red.md`)
+- **Agent:** `tdd-red` (`.claude/agents/tdd-red.md`)
 - **Persona:** Strict QA Engineer
 - **Constraint:** Can ONLY create/edit test files. Cannot touch source/implementation files.

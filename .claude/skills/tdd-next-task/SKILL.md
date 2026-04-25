@@ -71,21 +71,21 @@ Each phase must fully complete before launching the next — they are sequential
 - Add the task file to the accumulated Changed Files list when bridging
 
 #### 🔴 Red Phase (feature, bugfix, test)
-- Use the **Agent tool** with `agent_path=".claude/agents/tdd-red/tdd-red.md"` and prompt: `"Write failing tests for task XXX in _tasks/. Follow your complete process."`
+- Use the **Agent tool** with `subagent_type="tdd-red"` and prompt: `"Write failing tests for task XXX in _tasks/. Follow your complete process."`
 - If the subagent reports tests pass unexpectedly, stop and report to the user
 - **Extract the `## Changed Files` list** from the agent's response and add to the accumulated file list
 - On success, report: "🔴 Red phase complete — failing tests written"
 
 #### 🟢 Green Phase (feature, bugfix, refactor, chore)
 - **If Red was skipped** (refactor/chore): update the task file's frontmatter to `status: in-progress` before launching this phase
-- Use the **Agent tool** with `agent_path=".claude/agents/tdd-green/tdd-green.md"` and prompt: `"Write minimum implementation for task XXX in _tasks/. Follow your complete process."`
+- Use the **Agent tool** with `subagent_type="tdd-green"` and prompt: `"Write minimum implementation for task XXX in _tasks/. Follow your complete process."`
 - If the subagent cannot make tests pass, stop and report to the user
 - **Extract the `## Changed Files` list** from the agent's response and merge into the accumulated file list (deduplicate — the task file will appear in multiple phases)
 - On success, report: "🟢 Green phase complete — all tests passing"
 
 #### 🔍 Verify Phase (all types)
 - **If Green was skipped** (test): update the task file's frontmatter to `status: in-review` before launching this phase
-- Use the **Agent tool** with `agent_path=".claude/agents/tdd-verify/tdd-verify.md"` and prompt: `"Verify task XXX from _tasks/. Check tests and implementation against all ACs. Follow your complete process."`
+- Use the **Agent tool** with `subagent_type="tdd-verify"` and prompt: `"Verify task XXX from _tasks/. Check tests and implementation against all ACs. Follow your complete process."`
 - **Extract the `## Changed Files` list** from the agent's response and merge into the accumulated file list
 - If Verify **passes**: report "🔍 Task XXX verified and marked as done" — cycle complete
 - If Verify **rejects**: route back to the appropriate phase based on task type and rejection reason:

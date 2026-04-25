@@ -14,7 +14,7 @@ Delegates to the `tdd-verify` subagent (Senior Code Reviewer persona).
 When the user invokes `/tdd-verify`, delegate the work to the `tdd-verify` subagent:
 
 1. Parse the optional task number argument from `$ARGUMENTS`
-2. Use the **Agent tool** with `agent_path=".claude/agents/tdd-verify/tdd-verify.md"` and the following prompt:
+2. Use the **Agent tool** with `subagent_type="tdd-verify"` and the following prompt:
 
 **If task number provided:**
 > Verify task $TASK_NUMBER. Check that tests and implementation correctly fulfill all acceptance criteria. Follow your complete process.
@@ -31,5 +31,5 @@ When the user invokes `/tdd-verify`, delegate the work to the `tdd-verify` subag
 
 ## Subagent
 
-- **Agent:** `tdd-verify` (`.claude/agents/tdd-verify/tdd-verify.md`)
+- **Agent:** `tdd-verify` (`.claude/agents/tdd-verify.md`)
 - **Persona:** Senior Code Reviewer

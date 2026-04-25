@@ -48,12 +48,29 @@ function install() {
 
   // Copy agents (flat .md files — Claude Code requires top-level files in .claude/agents/)
   fs.mkdirSync(agentsDest, { recursive: true });
+  const agentNames = [];
   for (const entry of fs.readdirSync(agentsSrc, { withFileTypes: true })) {
     if (!entry.isFile() || !entry.name.endsWith('.md')) continue;
     const src = path.join(agentsSrc, entry.name);
     const dest = path.join(agentsDest, entry.name);
     fs.copyFileSync(src, dest);
     console.log(`  .claude/agents/${entry.name}`);
+    agentNames.push(entry.name.replace(/\.md$/, ''));
+  }
+
+  // Clean up legacy <name>/<name>.md subdirectories from pre-1.2.0 installs.
+  // Only remove if the subdir contains exactly the legacy file and nothing else.
+  for (const name of agentNames) {
+    const legacyDir = path.join(agentsDest, name);
+    if (!fs.existsSync(legacyDir) || !fs.statSync(legacyDir).isDirectory()) continue;
+    const contents = fs.readdirSync(legacyDir);
+    const isLegacyOnly = contents.length === 1 && contents[0] === `${name}.md`;
+    if (isLegacyOnly) {
+      fs.rmSync(legacyDir, { recursive: true, force: true });
+      console.log(`  removed legacy .claude/agents/${name}/`);
+    } else {
+      console.warn(`  ! .claude/agents/${name}/ has unexpected contents — leaving in place; remove manually if no longer needed`);
+    }
   }
 
   // Copy shared resources (task-ops.md, etc.)
